@@ -7,9 +7,11 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;background:#f5f4f0;color:#1a1a18;min-height:100vh;}
-header{background:#26215C;color:#fff;padding:20px 24px 16px;}
+header{background:#26215C;color:#fff;padding:20px 24px 16px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 header h1{font-size:22px;font-weight:500;letter-spacing:-.3px;}
 header p{font-size:13px;opacity:.65;margin-top:3px;}
+.deadline-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:8px 14px;font-size:12px;color:#fff;text-align:right;white-space:nowrap;}
+.deadline-badge strong{display:block;font-size:15px;font-weight:500;}
 .container{max-width:980px;margin:0 auto;padding:24px 16px 60px;}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
 .tab{padding:7px 18px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:#555;font-family:inherit;transition:background .15s;}
@@ -23,11 +25,11 @@ header p{font-size:13px;opacity:.65;margin-top:3px;}
 .stat-val{font-size:26px;font-weight:500;color:#26215C;}
 .filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
 .filter-bar label{font-size:13px;color:#666;}
-select{font-family:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;cursor:pointer;}
-.search-box{font-family:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;width:180px;}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+select,input[type=text],input[type=password]{font-family:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;cursor:pointer;}
+.search-box{width:180px;}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
 .card{background:#fff;border-radius:12px;border:1px solid #e4e3df;padding:16px;}
-.card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
 .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
 .av-v{background:#EEEDFE;color:#3C3489;}
 .av-b{background:#E1F5EE;color:#085041;}
@@ -38,21 +40,31 @@ select{font-family:inherit;font-size:13px;padding:6px 10px;border-radius:8px;bor
 .badge-v{background:#EEEDFE;color:#3C3489;}
 .badge-b{background:#E1F5EE;color:#085041;}
 .badge-both{background:#FAEEDA;color:#633806;}
-.mat-list{display:flex;flex-direction:column;gap:7px;}
-.mat-row{display:flex;align-items:center;gap:8px;}
-.mat-name{font-size:12px;color:#555;width:148px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-wrap{flex:1;background:#ededea;border-radius:4px;height:7px;overflow:hidden;}
-.bar{height:7px;border-radius:4px;}
-.bar-v{background:#7F77DD;}
-.bar-b{background:#1D9E75;}
-.mat-amt{font-size:12px;font-weight:500;min-width:48px;text-align:right;color:#1a1a18;}
-.mat-hrs{font-size:11px;color:#999;min-width:36px;text-align:right;}
+.progress-bar-wrap{height:4px;background:#ededea;border-radius:4px;margin-bottom:12px;overflow:hidden;}
+.progress-bar-fill{height:4px;border-radius:4px;background:#26215C;transition:width .4s;}
+
+/* material task rows */
+.mat-task{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;border:1px solid transparent;transition:background .15s,border-color .15s;cursor:pointer;user-select:none;}
+.mat-task:hover{background:#f9f8f5;border-color:#e4e3df;}
+.mat-task.done{background:#f0faf5;border-color:#9FE1CB;}
+.mat-img{width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;background:#f0efe9;}
+.mat-img-placeholder{width:36px;height:36px;border-radius:6px;background:#ededea;flex-shrink:0;}
+.mat-info{flex:1;min-width:0;}
+.mat-name{font-size:12px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mat-sub{font-size:11px;color:#999;margin-top:1px;}
+.mat-check{width:22px;height:22px;border-radius:6px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,border-color .15s;}
+.mat-task.done .mat-check{background:#1D9E75;border-color:#1D9E75;}
+.check-svg{display:none;}
+.mat-task.done .check-svg{display:block;}
+
+/* table */
 .table-wrap{background:#fff;border-radius:12px;border:1px solid #e4e3df;overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 th{text-align:left;padding:10px 14px;font-weight:500;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e4e3df;white-space:nowrap;}
-td{padding:10px 14px;border-bottom:1px solid #f0efe9;}
+td{padding:10px 14px;border-bottom:1px solid #f0efe9;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#faf9f6;}
+
 .legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:16px;}
 .leg{display:flex;align-items:center;gap:6px;font-size:12px;color:#666;}
 .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
@@ -61,19 +73,27 @@ tr:hover td{background:#faf9f6;}
 .pw-overlay h3{font-size:16px;font-weight:500;margin-bottom:8px;color:#26215C;}
 .pw-overlay p{font-size:13px;color:#888;margin-bottom:18px;}
 .pw-row{display:flex;gap:8px;justify-content:center;align-items:center;}
-.pw-input{font-family:inherit;font-size:14px;padding:8px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;width:200px;}
-.btn-primary{padding:8px 20px;background:#26215C;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;}
+.btn{padding:8px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;border:1px solid #ccc;background:#fff;color:#444;}
+.btn:hover{background:#ededea;}
+.btn-primary{background:#26215C;color:#fff;border-color:#26215C;}
 .btn-primary:hover{background:#3C3489;}
 .err-msg{font-size:12px;color:#c0392b;margin-top:8px;min-height:16px;}
 textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radius:8px;border:1px solid #ccc;resize:vertical;color:#1a1a18;background:#fff;}
-@media(max-width:480px){.cards-grid{grid-template-columns:1fr;}.mat-name{width:120px;}}
+.loading{text-align:center;padding:40px;color:#888;font-size:13px;}
+@media(max-width:520px){.cards-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>The West — Crafting Schedule</h1>
-  <p>Viewfinders &amp; Booby Traps — gathering assignments</p>
+  <div>
+    <h1>The West — Crafting Schedule</h1>
+    <p>Viewfinders &amp; Booby Traps — gathering assignments</p>
+  </div>
+  <div class="deadline-badge">
+    Next deadline<strong id="nextDeadline">—</strong>
+    <span id="daysLeft" style="opacity:.8;font-size:11px;"></span>
+  </div>
 </header>
 
 <div class="container">
@@ -84,6 +104,7 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
     <button class="tab" onclick="switchTab('editData',this)">Edit roster</button>
   </div>
 
+  <!-- BY PLAYER -->
   <div id="byPlayer" class="section show">
     <div class="filter-bar">
       <label>Filter:</label>
@@ -93,15 +114,16 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
         <option value="b">Booby traps only</option>
         <option value="both">Mixed assignment</option>
       </select>
-      <input class="search-box" id="searchBox" placeholder="Search player..." oninput="renderCards()">
+      <input type="text" class="search-box" id="searchBox" placeholder="Search player..." oninput="renderCards()">
     </div>
     <div class="legend">
       <div class="leg"><div class="leg-dot" style="background:#7F77DD"></div>Viewfinder material</div>
       <div class="leg"><div class="leg-dot" style="background:#1D9E75"></div>Booby trap material</div>
     </div>
-    <div class="cards-grid" id="cardsGrid"></div>
+    <div id="cardsGrid" class="cards-grid"><div class="loading">Loading schedule...</div></div>
   </div>
 
+  <!-- BY MATERIAL -->
   <div id="byMaterial" class="section">
     <div class="table-wrap">
       <table>
@@ -111,23 +133,25 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
     </div>
   </div>
 
+  <!-- SUMMARY -->
   <div id="summary" class="section">
     <div class="stat-row" id="statRow"></div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Player</th><th>Assignment</th><th>Materials</th><th>Total hours</th></tr></thead>
+        <thead><tr><th>Player</th><th>Assignment</th><th>Materials</th><th>Total hours</th><th>Progress</th></tr></thead>
         <tbody id="summaryBody"></tbody>
       </table>
     </div>
   </div>
 
+  <!-- EDIT ROSTER -->
   <div id="editData" class="section">
     <div id="pwWall" class="pw-overlay">
       <h3>Roster editing is locked</h3>
       <p>Enter the password to make changes.</p>
       <div class="pw-row">
-        <input class="pw-input" id="pwInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()">
-        <button class="btn-primary" onclick="checkPw()">Unlock</button>
+        <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()" style="width:200px;">
+        <button class="btn btn-primary" onclick="checkPw()">Unlock</button>
       </div>
       <div class="err-msg" id="pwErr"></div>
     </div>
@@ -143,18 +167,30 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
           <textarea id="bEdit" rows="20"></textarea>
         </div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <button class="btn-primary" onclick="applyEdit()">Recalculate</button>
-        <button onclick="lockEdit()" style="padding:8px 20px;background:transparent;color:#666;border:1px solid #ccc;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;">Lock</button>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="applyEdit()">Recalculate</button>
+        <button class="btn" onclick="lockEdit()">Lock</button>
+        <button class="btn" onclick="resetChecks()" style="color:#c0392b;border-color:#f5c6c6;">Reset all checkmarks</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Firebase -->
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-database-compat.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════
-//  ROSTER — edit here or via the password-protected
-//  "Edit roster" tab on the live page
+//  FIREBASE CONFIG
+// ═══════════════════════════════════════════════════
+var firebaseConfig = {
+  databaseURL: "https://the-west-schedule-default-rtdb.europe-west1.firebasedatabase.app/"
+};
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+// ═══════════════════════════════════════════════════
+//  ROSTER
 // ═══════════════════════════════════════════════════
 var V_PLAYERS = [
   "TheRealTox","Warmonki","sundens","Xycrig","Indominus D",
@@ -169,229 +205,247 @@ var B_PLAYERS = [
 ];
 
 // ═══════════════════════════════════════════════════
-//  MATERIALS — edit totals/rates if recipes change
+//  MATERIALS
 // ═══════════════════════════════════════════════════
 var V_MATS = [
-  {name:"Wood",                 total:500,  rph:42},
-  {name:"Granite",              total:200,  rph:25},
-  {name:"Semi-precious stones", total:200,  rph:6 },
-  {name:"Coal",                 total:100,  rph:15},
-  {name:"Jugs",                 total:200,  rph:8 },
-  {name:"Saw",                  total:200,  rph:5 },
-  {name:"Hammer",               total:200,  rph:12},
-  {name:"Nails",                total:600,  rph:19},
-  {name:"Iron rod",             total:100,  rph:15},
-  {name:"Lead",                 total:100,  rph:30},
-  {name:"White gloves",         total:100,  rph:6 }
+  {name:"Wood",                 total:500,  rph:42, img:"img/wood.png"},
+  {name:"Granite",              total:200,  rph:25, img:"img/granite.png"},
+  {name:"Semi-precious stones", total:200,  rph:6,  img:"img/semi-precious-stones.png"},
+  {name:"Coal",                 total:100,  rph:15, img:"img/coal.png"},
+  {name:"Jugs",                 total:200,  rph:8,  img:"img/jugs.png"},
+  {name:"Saw",                  total:200,  rph:5,  img:"img/saw.png"},
+  {name:"Hammer",               total:200,  rph:12, img:"img/hammer.png"},
+  {name:"Nails",                total:600,  rph:19, img:"img/nails.png"},
+  {name:"Iron rod",             total:100,  rph:15, img:"img/iron-rod.png"},
+  {name:"Lead",                 total:100,  rph:30, img:"img/lead.png"},
+  {name:"White gloves",         total:100,  rph:6,  img:"img/white-gloves.png"}
 ];
 var B_MATS = [
-  {name:"Granite",              total:100,  rph:25},
-  {name:"Dynamite",             total:1000, rph:14},
-  {name:"Jugs",                 total:200,  rph:8 },
-  {name:"Saws",                 total:200,  rph:5 },
-  {name:"Newspaper",            total:500,  rph:36},
-  {name:"Sledge hammer",        total:100,  rph:7 },
-  {name:"Glass of water",       total:100,  rph:36},
-  {name:"Snake skin",           total:100,  rph:7 },
-  {name:"Metal chips",          total:500,  rph:14},
-  {name:"Pinkerton emblems",    total:200,  rph:5 },
-  {name:"Blasting machines",    total:500,  rph:6 }
+  {name:"Granite",              total:100,  rph:25, img:"img/granite.png"},
+  {name:"Dynamite",             total:1000, rph:14, img:"img/dynamite.png"},
+  {name:"Jugs",                 total:200,  rph:8,  img:"img/jugs.png"},
+  {name:"Saws",                 total:200,  rph:5,  img:"img/saws.png"},
+  {name:"Newspaper",            total:500,  rph:36, img:"img/newspaper.png"},
+  {name:"Sledge hammer",        total:100,  rph:7,  img:"img/sledge-hammer.png"},
+  {name:"Glass of water",       total:100,  rph:36, img:"img/glass-of-water.png"},
+  {name:"Snake skin",           total:100,  rph:7,  img:"img/snake-skin.png"},
+  {name:"Metal chips",          total:500,  rph:14, img:"img/metal-chips.png"},
+  {name:"Pinkerton emblems",    total:200,  rph:5,  img:"img/pinkerton-emblems.png"},
+  {name:"Blasting machines",    total:500,  rph:6,  img:"img/blasting-machines.png"}
 ];
 // ═══════════════════════════════════════════════════
 
 var PW = "letmein123";
+var checks = {};   // { "PlayerName|MatName": true }
+var RES;
 
-// Build one combined pool of all unique players
+// ── deadline helpers ──────────────────────────────
+function getPeriodKey() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = now.getMonth()+1;
+  var d = now.getDate();
+  var half = d <= 15 ? 1 : 2;
+  return y+'-'+m+'-'+half;
+}
+
+function getNextDeadline() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = now.getMonth();
+  var d = now.getDate();
+  var target;
+  if (d <= 15) {
+    target = new Date(y, m, 15);
+  } else {
+    target = new Date(y, m+1, 0); // last day of month = 28/29/30/31, we use 30
+    target = new Date(y, m, 30);
+    if (target.getMonth() !== m) target = new Date(y, m+1, 0);
+  }
+  return target;
+}
+
+function updateDeadlineDisplay() {
+  var dl = getNextDeadline();
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('nextDeadline').textContent = months[dl.getMonth()]+' '+dl.getDate();
+  var diff = Math.ceil((dl - new Date()) / 86400000);
+  document.getElementById('daysLeft').textContent = diff > 0 ? diff+' days left' : 'Today!';
+}
+
+// ── firebase: period-scoped checks ───────────────
+var periodKey = getPeriodKey();
+var checksRef = db.ref('checks/'+periodKey);
+
+checksRef.on('value', function(snap) {
+  checks = snap.val() || {};
+  if (RES) { renderCards(); renderSummary(); }
+});
+
+function toggleCheck(player, mat) {
+  var key = player.replace(/[.#$/\[\]]/g,'_')+'|'+mat.replace(/[.#$/\[\]]/g,'_');
+  if (checks[key]) {
+    checksRef.child(key).remove();
+  } else {
+    checksRef.child(key).set(true);
+  }
+}
+
+function isChecked(player, mat) {
+  var key = player.replace(/[.#$/\[\]]/g,'_')+'|'+mat.replace(/[.#$/\[\]]/g,'_');
+  return !!checks[key];
+}
+
+function resetChecks() {
+  if (!confirm('Reset ALL checkmarks for the current period?')) return;
+  checksRef.remove();
+}
+
+// ── distribution ──────────────────────────────────
 function allPlayers() {
-  var seen = {};
-  var pool = [];
-  V_PLAYERS.concat(B_PLAYERS).forEach(function(p) {
-    if (!seen[p]) { seen[p] = true; pool.push(p); }
-  });
+  var seen = {}, pool = [];
+  V_PLAYERS.concat(B_PLAYERS).forEach(function(p){if(!seen[p]){seen[p]=true;pool.push(p);}});
   return pool;
 }
 
-// Distribute a list of materials across a pool of players
-// so each player ends up with roughly equal total hours.
-// Returns { assignments: {player: [{mat,amount,hours,craft}]}, playerHours, matAssignments }
-function distribute(players, mats, craftTag) {
-  var n = players.length;
-  if (!n) return {assignments:{},playerHours:{},matAssignments:[]};
-  var totalHours = mats.reduce(function(s,m){return s+m.total/m.rph;},0);
-  var target = totalHours / n;
-  var playerHours = {};
-  var assignments = {};
-  players.forEach(function(p){playerHours[p]=0;assignments[p]=[];});
-  var matAssignments = [];
-
-  mats.forEach(function(mat) {
-    var remaining = mat.total;
-    var assigns = [];
-    var safety = 0;
-    while (remaining > 0 && safety++ < n*6) {
-      var sorted = players.slice().sort(function(a,b){return playerHours[a]-playerHours[b];});
-      var p = sorted[0];
-      var slack = Math.max(0, target - playerHours[p]);
-      var giveHours = slack > 0.001 ? slack : mat.total / mat.rph / n;
-      var giveAmt = Math.min(remaining, Math.max(1, Math.round(giveHours * mat.rph)));
-      if (giveAmt > remaining) giveAmt = remaining;
-      var hrs = giveAmt / mat.rph;
-      var ex = assigns.find(function(a){return a.player===p;});
-      if (ex) { ex.amount+=giveAmt; ex.hours+=hrs; }
-      else     { assigns.push({player:p,amount:giveAmt,hours:hrs}); }
-      playerHours[p] += hrs;
-      remaining -= giveAmt;
-    }
-    if (remaining > 0) {
-      var last = assigns[assigns.length-1] || {player:players[0],amount:0,hours:0};
-      if (!assigns.length) assigns.push(last);
-      last.amount += remaining;
-      last.hours  += remaining / mat.rph;
-      playerHours[last.player] += remaining / mat.rph;
-    }
-    assigns.forEach(function(a){
-      assignments[a.player].push({mat:mat.name,amount:a.amount,hours:a.hours,craft:craftTag});
-    });
-    matAssignments.push({mat:mat.name,total:mat.total,rph:mat.rph,craft:craftTag,assigns:assigns});
-  });
-  return {assignments:assignments,playerHours:playerHours,matAssignments:matAssignments};
-}
-
-// Pool all players, distribute all materials together with equal target
 function poolDistribute() {
   var players = allPlayers();
   var n = players.length;
   var allMats = V_MATS.map(function(m){return Object.assign({},m,{craft:'v'});})
-                .concat(B_MATS.map(function(m){return Object.assign({},m,{craft:'b'});}));
+               .concat(B_MATS.map(function(m){return Object.assign({},m,{craft:'b'});}));
   var totalHours = allMats.reduce(function(s,m){return s+m.total/m.rph;},0);
-  var target = totalHours / n;
-
-  var playerHours = {};
-  var assignments = {};
+  var target = totalHours/n;
+  var playerHours={}, assignments={};
   players.forEach(function(p){playerHours[p]=0;assignments[p]=[];});
-  var matAssignments = [];
+  var matAssignments=[];
 
-  allMats.forEach(function(mat) {
-    var remaining = mat.total;
-    var assigns = [];
-    var safety = 0;
-    while (remaining > 0 && safety++ < n*6) {
-      var sorted = players.slice().sort(function(a,b){return playerHours[a]-playerHours[b];});
-      var p = sorted[0];
-      var slack = Math.max(0, target - playerHours[p]);
-      var giveHours = slack > 0.001 ? slack : mat.total / mat.rph / n;
-      var giveAmt = Math.min(remaining, Math.max(1, Math.round(giveHours * mat.rph)));
-      if (giveAmt > remaining) giveAmt = remaining;
-      var hrs = giveAmt / mat.rph;
-      var ex = assigns.find(function(a){return a.player===p;});
-      if (ex) { ex.amount+=giveAmt; ex.hours+=hrs; }
-      else     { assigns.push({player:p,amount:giveAmt,hours:hrs}); }
-      playerHours[p] += hrs;
-      remaining -= giveAmt;
+  allMats.forEach(function(mat){
+    var remaining=mat.total, assigns=[], safety=0;
+    while(remaining>0&&safety++<n*6){
+      var sorted=players.slice().sort(function(a,b){return playerHours[a]-playerHours[b];});
+      var p=sorted[0];
+      var slack=Math.max(0,target-playerHours[p]);
+      var giveHours=slack>0.001?slack:mat.total/mat.rph/n;
+      var giveAmt=Math.min(remaining,Math.max(1,Math.round(giveHours*mat.rph)));
+      if(giveAmt>remaining)giveAmt=remaining;
+      var hrs=giveAmt/mat.rph;
+      var ex=assigns.find(function(a){return a.player===p;});
+      if(ex){ex.amount+=giveAmt;ex.hours+=hrs;}
+      else{assigns.push({player:p,amount:giveAmt,hours:hrs});}
+      playerHours[p]+=hrs; remaining-=giveAmt;
     }
-    if (remaining > 0) {
-      var last = assigns[assigns.length-1] || {player:players[0],amount:0,hours:0};
-      if (!assigns.length) assigns.push(last);
-      last.amount += remaining;
-      last.hours  += remaining / mat.rph;
-      playerHours[last.player] += remaining / mat.rph;
+    if(remaining>0){
+      var last=assigns[assigns.length-1]||{player:players[0],amount:0,hours:0};
+      if(!assigns.length)assigns.push(last);
+      last.amount+=remaining;last.hours+=remaining/mat.rph;
+      playerHours[last.player]+=remaining/mat.rph;
     }
     assigns.forEach(function(a){
-      assignments[a.player].push({mat:mat.name,amount:a.amount,hours:a.hours,craft:mat.craft});
+      assignments[a.player].push({mat:mat.name,amount:a.amount,hours:a.hours,craft:mat.craft,img:mat.img});
     });
-    matAssignments.push({mat:mat.name,total:mat.total,rph:mat.rph,craft:mat.craft,assigns:assigns});
+    matAssignments.push({mat:mat.name,total:mat.total,rph:mat.rph,craft:mat.craft,img:mat.img,assigns:assigns});
   });
   return {assignments:assignments,playerHours:playerHours,matAssignments:matAssignments,target:target};
 }
 
-var RES;
-
-function recalc() {
-  RES = poolDistribute();
-  renderCards();
-  renderMaterials();
-  renderSummary();
-  document.getElementById('vEdit').value = V_PLAYERS.join('\n');
-  document.getElementById('bEdit').value = B_PLAYERS.join('\n');
+function recalc(){
+  RES=poolDistribute();
+  renderCards();renderMaterials();renderSummary();
+  document.getElementById('vEdit').value=V_PLAYERS.join('\n');
+  document.getElementById('bEdit').value=B_PLAYERS.join('\n');
 }
 
-function playerType(p) {
-  var inV = V_PLAYERS.indexOf(p) !== -1;
-  var inB = B_PLAYERS.indexOf(p) !== -1;
-  if (inV && inB) return 'both';
-  if (inB) return 'b';
-  return 'v';
+// ── helpers ───────────────────────────────────────
+function initials(name){
+  var parts=name.trim().split(/[\s.]+/);
+  return((parts[0][0]||'')+(parts[1]?parts[1][0]:parts[0][1]||'')).toUpperCase();
+}
+function assignmentType(assigns){
+  var v=assigns.some(function(a){return a.craft==='v';}),
+      b=assigns.some(function(a){return a.craft==='b';});
+  return(v&&b)?'both':b?'b':'v';
+}
+function stat(label,val){
+  return'<div class="stat"><div class="stat-label">'+label+'</div><div class="stat-val">'+val+'</div></div>';
 }
 
-function assignmentType(assigns) {
-  var hasV = assigns.some(function(a){return a.craft==='v';});
-  var hasB = assigns.some(function(a){return a.craft==='b';});
-  if (hasV && hasB) return 'both';
-  if (hasB) return 'b';
-  return 'v';
-}
+// ── render: by player ─────────────────────────────
+function renderCards(){
+  var filter=document.getElementById('roleFilter').value;
+  var search=document.getElementById('searchBox').value.toLowerCase();
+  var grid=document.getElementById('cardsGrid');
+  grid.innerHTML='';
+  var players=allPlayers();
 
-function initials(name) {
-  var parts = name.trim().split(/[\s.]+/);
-  return ((parts[0][0]||'')+(parts[1]?parts[1][0]:parts[0][1]||'')).toUpperCase();
-}
+  players.forEach(function(p){
+    var assigns=RES.assignments[p]||[];
+    var aType=assignmentType(assigns);
+    if(filter!=='all'&&filter!==aType)return;
+    if(search&&p.toLowerCase().indexOf(search)===-1)return;
 
-function renderCards() {
-  var filter = document.getElementById('roleFilter').value;
-  var search = document.getElementById('searchBox').value.toLowerCase();
-  var grid = document.getElementById('cardsGrid');
-  grid.innerHTML = '';
-  var players = allPlayers();
+    var hrs=RES.playerHours[p]||0;
+    var avCls=aType==='v'?'av-v':aType==='b'?'av-b':'av-both';
+    var badgeCls=aType==='v'?'badge-v':aType==='b'?'badge-b':'badge-both';
+    var roleLabel=aType==='v'?'Viewfinders':aType==='b'?'Booby traps':'Mixed';
 
-  players.forEach(function(p) {
-    var assigns = RES.assignments[p] || [];
-    var aType = assignmentType(assigns);
-    if (filter !== 'all' && filter !== aType) return;
-    if (search && p.toLowerCase().indexOf(search) === -1) return;
+    var doneCount=assigns.filter(function(a){return isChecked(p,a.mat);}).length;
+    var pct=assigns.length?Math.round(doneCount/assigns.length*100):0;
 
-    var hrs = RES.playerHours[p] || 0;
-    var avCls    = aType==='v'?'av-v':aType==='b'?'av-b':'av-both';
-    var badgeCls = aType==='v'?'badge-v':aType==='b'?'badge-b':'badge-both';
-    var roleLabel= aType==='v'?'Viewfinders':aType==='b'?'Booby traps':'Mixed';
-    var maxAmt   = Math.max.apply(null, assigns.map(function(a){return a.amount;}).concat([1]));
+    var card=document.createElement('div');
+    card.className='card';
 
-    var matRows = assigns.map(function(a) {
-      var pct = Math.round(a.amount/maxAmt*100);
-      var barCls = a.craft==='v'?'bar-v':'bar-b';
-      return '<div class="mat-row">'
-        +'<span class="mat-name" title="'+a.mat+'">'+a.mat+'</span>'
-        +'<div class="bar-wrap"><div class="bar '+barCls+'" style="width:'+pct+'%"></div></div>'
-        +'<span class="mat-amt">'+a.amount.toLocaleString()+'</span>'
-        +'<span class="mat-hrs">'+a.hours.toFixed(1)+'h</span>'
-        +'</div>';
+    var matRows=assigns.map(function(a){
+      var done=isChecked(p,a.mat);
+      var imgEl=a.img
+        ?'<img class="mat-img" src="'+a.img+'" alt="'+a.mat+'" width="36" height="36" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'">'
+         +'<div class="mat-img-placeholder" style="display:none"></div>'
+        :'<div class="mat-img-placeholder"></div>';
+      var craftDot='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+(a.craft==='v'?'#7F77DD':'#1D9E75')+';margin-right:3px;vertical-align:middle;"></span>';
+      return '<div class="mat-task'+(done?' done':'')+'" onclick="toggleCheck(\''+p.replace(/'/g,"\\'")+'\',' +'\''+a.mat.replace(/'/g,"\\'")+'\')' +'">'
+        +imgEl
+        +'<div class="mat-info">'
+          +'<div class="mat-name">'+craftDot+a.mat+'</div>'
+          +'<div class="mat-sub">'+a.amount.toLocaleString()+' pcs &middot; '+a.hours.toFixed(1)+'h</div>'
+        +'</div>'
+        +'<div class="mat-check">'
+          +'<svg class="check-svg" width="12" height="12" viewBox="0 0 12 12" fill="none">'
+            +'<polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+          +'</svg>'
+        +'</div>'
+      +'</div>';
     }).join('');
 
-    var card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = '<div class="card-header">'
+    card.innerHTML='<div class="card-header">'
       +'<div class="avatar '+avCls+'">'+initials(p)+'</div>'
-      +'<div><div class="card-name">'+p+'</div>'
-      +'<div class="card-meta"><span class="badge '+badgeCls+'">'+roleLabel+'</span>&nbsp; '+hrs.toFixed(1)+' hrs</div>'
-      +'</div></div>'
-      +'<div class="mat-list">'+matRows+'</div>';
+      +'<div style="flex:1;min-width:0;">'
+        +'<div class="card-name">'+p+'</div>'
+        +'<div class="card-meta"><span class="badge '+badgeCls+'">'+roleLabel+'</span>&nbsp; '+hrs.toFixed(1)+' hrs</div>'
+      +'</div>'
+      +'<div style="font-size:12px;font-weight:500;color:#26215C;white-space:nowrap;">'+doneCount+'/'+assigns.length+'</div>'
+    +'</div>'
+    +'<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct+'%"></div></div>'
+    +'<div class="mat-list">'+matRows+'</div>';
+
     grid.appendChild(card);
   });
 
-  if (!grid.children.length) {
-    grid.innerHTML = '<p style="color:#888;font-size:13px;padding:8px 0;">No players match.</p>';
+  if(!grid.children.length){
+    grid.innerHTML='<p style="color:#888;font-size:13px;padding:8px 0;">No players match.</p>';
   }
 }
 
-function renderMaterials() {
-  var body = document.getElementById('matBody');
-  body.innerHTML = '';
-  RES.matAssignments.forEach(function(m) {
-    var playerList = m.assigns.map(function(a){return a.player;}).join(', ');
-    var eachAmt = m.assigns.length ? Math.round(m.total/m.assigns.length) : m.total;
-    var bc = m.craft==='v'?'badge-v':'badge-b';
-    var label = m.craft==='v'?'Viewfinders':'Booby traps';
-    var tr = document.createElement('tr');
-    tr.innerHTML = '<td style="font-weight:500">'+m.mat+'</td>'
+// ── render: by material ───────────────────────────
+function renderMaterials(){
+  var body=document.getElementById('matBody');
+  body.innerHTML='';
+  RES.matAssignments.forEach(function(m){
+    var playerList=m.assigns.map(function(a){return a.player;}).join(', ');
+    var eachAmt=m.assigns.length?Math.round(m.total/m.assigns.length):m.total;
+    var bc=m.craft==='v'?'badge-v':'badge-b';
+    var label=m.craft==='v'?'Viewfinders':'Booby traps';
+    var imgCell=m.img?'<img src="'+m.img+'" width="28" height="28" style="border-radius:4px;vertical-align:middle;" onerror="this.style.display=\'none\'">':'';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-weight:500">'+imgCell+' '+m.mat+'</td>'
       +'<td><span class="badge '+bc+'">'+label+'</span></td>'
       +'<td>'+m.total.toLocaleString()+'</td>'
       +'<td>'+m.rph+'/hr</td>'
@@ -402,82 +456,90 @@ function renderMaterials() {
   });
 }
 
-function renderSummary() {
-  var players = allPlayers();
-  var totalHrs = players.reduce(function(s,p){return s+(RES.playerHours[p]||0);},0);
-  var target = RES.target;
-  var hrs = players.map(function(p){return RES.playerHours[p]||0;});
-  var minH = Math.min.apply(null,hrs), maxH = Math.max.apply(null,hrs);
+// ── render: summary ───────────────────────────────
+function renderSummary(){
+  var players=allPlayers();
+  var totalHrs=players.reduce(function(s,p){return s+(RES.playerHours[p]||0);},0);
+  var target=RES.target;
+  var hrsArr=players.map(function(p){return RES.playerHours[p]||0;});
+  var minH=Math.min.apply(null,hrsArr),maxH=Math.max.apply(null,hrsArr);
+  var totalTasks=players.reduce(function(s,p){return s+(RES.assignments[p]||[]).length;},0);
+  var doneTasks=players.reduce(function(s,p){
+    return s+(RES.assignments[p]||[]).filter(function(a){return isChecked(p,a.mat);}).length;
+  },0);
 
-  document.getElementById('statRow').innerHTML =
-    stat('Total players', players.length)
-    +stat('Total hours', Math.round(totalHrs))
-    +stat('Target / player', target.toFixed(1)+'h')
-    +stat('Max spread', (maxH-minH).toFixed(1)+'h');
+  document.getElementById('statRow').innerHTML=
+    stat('Total players',players.length)
+    +stat('Total hours',Math.round(totalHrs))
+    +stat('Target / player',target.toFixed(1)+'h')
+    +stat('Overall progress',doneTasks+'/'+totalTasks);
 
-  var body = document.getElementById('summaryBody');
-  body.innerHTML = '';
-  var rows = players.map(function(p){
-    var assigns = RES.assignments[p]||[];
-    var aType = assignmentType(assigns);
-    var mats = assigns.map(function(a){
-      return '<span class="badge '+(a.craft==='v'?'badge-v':'badge-b')+'" style="margin:1px 2px;font-size:10px;">'+a.mat+'</span>';
+  var body=document.getElementById('summaryBody');
+  body.innerHTML='';
+  var rows=players.map(function(p){
+    var assigns=RES.assignments[p]||[];
+    var aType=assignmentType(assigns);
+    var done=assigns.filter(function(a){return isChecked(p,a.mat);}).length;
+    var pct=assigns.length?Math.round(done/assigns.length*100):0;
+    var mats=assigns.map(function(a){
+      var ck=isChecked(p,a.mat);
+      return'<span class="badge '+(a.craft==='v'?'badge-v':'badge-b')+'" style="margin:1px 2px;font-size:10px;'+(ck?'opacity:.45;text-decoration:line-through;':'')+'">'+a.mat+'</span>';
     }).join(' ');
-    return {p:p,aType:aType,hrs:RES.playerHours[p]||0,mats:mats};
+    return{p:p,aType:aType,hrs:RES.playerHours[p]||0,mats:mats,done:done,total:assigns.length,pct:pct};
   });
   rows.sort(function(a,b){return b.hrs-a.hrs;});
   rows.forEach(function(r){
-    var bc = r.aType==='v'?'badge-v':r.aType==='b'?'badge-b':'badge-both';
-    var label = r.aType==='v'?'Viewfinders':r.aType==='b'?'Booby traps':'Mixed';
-    var diff = r.hrs - target;
-    var diffStr = (diff>=0?'+':'')+diff.toFixed(1)+'h';
-    var diffColor = Math.abs(diff)<1?'#3B6D11':Math.abs(diff)<3?'#7a5c00':'#c0392b';
-    var tr = document.createElement('tr');
-    tr.innerHTML = '<td style="font-weight:500">'+r.p+'</td>'
+    var bc=r.aType==='v'?'badge-v':r.aType==='b'?'badge-b':'badge-both';
+    var label=r.aType==='v'?'Viewfinders':r.aType==='b'?'Booby traps':'Mixed';
+    var diff=r.hrs-target;
+    var diffStr=(diff>=0?'+':'')+diff.toFixed(1)+'h';
+    var diffColor=Math.abs(diff)<1?'#3B6D11':Math.abs(diff)<3?'#7a5c00':'#c0392b';
+    var progressCol='<div style="display:flex;align-items:center;gap:8px;">'
+      +'<div style="flex:1;min-width:60px;height:5px;background:#ededea;border-radius:4px;overflow:hidden;">'
+        +'<div style="width:'+r.pct+'%;height:5px;background:#1D9E75;border-radius:4px;"></div>'
+      +'</div>'
+      +'<span style="font-size:12px;color:#666;white-space:nowrap;">'+r.done+'/'+r.total+'</span>'
+    +'</div>';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-weight:500">'+r.p+'</td>'
       +'<td><span class="badge '+bc+'">'+label+'</span></td>'
-      +'<td style="font-size:12px;line-height:1.8">'+r.mats+'</td>'
-      +'<td><span style="font-weight:500">'+r.hrs.toFixed(1)+'h</span> '
-      +'<span style="font-size:11px;color:'+diffColor+'">'+diffStr+'</span></td>';
+      +'<td style="font-size:12px;line-height:2">'+r.mats+'</td>'
+      +'<td><span style="font-weight:500">'+r.hrs.toFixed(1)+'h</span> <span style="font-size:11px;color:'+diffColor+'">'+diffStr+'</span></td>'
+      +'<td style="min-width:100px;">'+progressCol+'</td>';
     body.appendChild(tr);
   });
 }
 
-function stat(label,val){
-  return '<div class="stat"><div class="stat-label">'+label+'</div><div class="stat-val">'+val+'</div></div>';
-}
-
+// ── tab / auth ────────────────────────────────────
 function switchTab(id,btn){
   document.querySelectorAll('.section').forEach(function(s){s.classList.remove('show');});
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById(id).classList.add('show');
   btn.classList.add('active');
 }
-
 function checkPw(){
-  var val = document.getElementById('pwInput').value;
-  if (val === PW) {
-    document.getElementById('pwWall').style.display = 'none';
-    document.getElementById('editForm').style.display = 'block';
-    document.getElementById('pwErr').textContent = '';
-  } else {
-    document.getElementById('pwErr').textContent = 'Wrong password, try again.';
-    document.getElementById('pwInput').value = '';
+  if(document.getElementById('pwInput').value===PW){
+    document.getElementById('pwWall').style.display='none';
+    document.getElementById('editForm').style.display='block';
+    document.getElementById('pwErr').textContent='';
+  }else{
+    document.getElementById('pwErr').textContent='Wrong password, try again.';
+    document.getElementById('pwInput').value='';
   }
 }
-
 function lockEdit(){
-  document.getElementById('pwWall').style.display = 'block';
-  document.getElementById('editForm').style.display = 'none';
-  document.getElementById('pwInput').value = '';
+  document.getElementById('pwWall').style.display='block';
+  document.getElementById('editForm').style.display='none';
+  document.getElementById('pwInput').value='';
 }
-
 function applyEdit(){
-  V_PLAYERS = document.getElementById('vEdit').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
-  B_PLAYERS = document.getElementById('bEdit').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  V_PLAYERS=document.getElementById('vEdit').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  B_PLAYERS=document.getElementById('bEdit').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
   recalc();
   alert('Done! Check the other tabs to see the updated schedule.');
 }
 
+updateDeadlineDisplay();
 recalc();
 </script>
 </body>
