@@ -1,1 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The West — Crafting Schedule</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; background: #f5f4f0; color: #1a1a18; min-height: 100vh; }
+  a { color: inherit; }
 
+  /* ── layout ── */
+  header { background: #26215C; color: #fff; padding: 20px 24px 16px; }
+  header h1 { font-size: 22px; font-weight: 500; letter-spacing: -.3px; }
+  header p  { font-size: 13px; opacity: .65; margin-top: 3px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  /* ── tabs ── */
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tab { padding: 7px 18px; border: 1px solid #ccc; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; color: #555; font-family: inherit; transition: background .15s; }
+  .tab:hover { background: #ededea; }
+  .tab.active { background: #26215C; color: #fff; border-color: #26215C; font-weight: 500; }
+  .section { display: none; }
+  .section.show { display: block; }
+
+  /* ── stat row ── */
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .stat { background: #fff; border-radius: 10px; padding: 14px 16px; border: 1px solid #e4e3df; }
+  .stat-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  .stat-val { font-size: 26px; font-weight: 500; color: #26215C; }
+
+  /* ── filter bar ── */
+  .filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-bar label { font-size: 13px; color: #666; }
+  select { font-family: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc; background: #fff; color: #1a1a18; cursor: pointer; }
+  .search-box { font-family: inherit; font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #ccc; background: #fff; color: #1a1a18; width: 180px; }
+
+  /* ── player cards ── */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .card { background: #fff; border-radius: 12px; border: 1px solid #e4e3df; padding: 16px; }
+  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+  .av-v    { background: #EEEDFE; color: #3C3489; }
+  .av-b    { background: #E1F5EE; color: #085041; }
+  .av-both { background: #FAEEDA; color: #633806; }
+  .card-name { font-size: 14px; font-weight: 500; }
+  .card-meta { font-size: 12px; color: #888; margin-top: 1px; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 500; }
+  .badge-v    { background: #EEEDFE; color: #3C3489; }
+  .badge-b    { background: #E1F5EE; color: #085041; }
+  .badge-both { background: #FAEEDA; color: #633806; }
+
+  /* ── mat rows inside card ── */
+  .mat-list { display: flex; flex-direction: column; gap: 7px; }
+  .mat-row  { display: flex; align-items: center; gap: 8px; }
+  .mat-name { font-size: 12px; color: #555; width: 148px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-wrap  { flex: 1; background: #ededea; border-radius: 4px; height: 7px; overflow: hidden; }
+  .bar       { height: 7px; border-radius: 4px; }
+  .bar-v    { background: #7F77DD; }
+  .bar-b    { background: #1D9E75; }
+  .mat-amt  { font-size: 12px; font-weight: 500; min-width: 48px; text-align: right; color: #1a1a18; }
+  .mat-hrs  { font-size: 11px; color: #999; min-width: 36px; text-align: right; }
+
+  /* ── table ── */
+  .table-wrap { background: #fff; border-radius: 12px; border: 1px solid #e4e3df; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 14px; font-weight: 500; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid #e4e3df; white-space: nowrap; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f0efe9; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #faf9f6; }
+
+  /* ── legend ── */
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #666; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── notice ── */
+  .notice { background: #fff8ec; border: 1px solid #f5d98a; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #7a5c00; margin-bottom: 16px; }
+
+  @media (max-width: 480px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    .mat-name { width: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>The West — Crafting Schedule</h1>
+  <p>Viewfinders &amp; Booby Traps — gathering assignments</p>
+</header>
+
+<div class="container">
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('byPlayer',this)">By player</button>
+    <button class="tab" onclick="switchTab('byMaterial',this)">By material</button>
+    <button class="tab" onclick="switchTab('summary',this)">Summary</button>
+    <button class="tab" onclick="switchTab('editData',this)">Edit roster</button>
+  </div>
+
+  <!-- BY PLAYER -->
+  <div id="byPlayer" class="section show">
+    <div class="filter-bar">
+      <label>Filter:</label>
+      <select id="roleFilter" onchange="renderCards()">
+        <option value="all">All players</option>
+        <option value="v">Viewfinders</option>
+        <option value="b">Booby traps</option>
+        <option value="both">Cross-assigned</option>
+      </select>
+      <input class="search-box" id="searchBox" placeholder="Search player..." oninput="renderCards()">
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#7F77DD"></div>Viewfinders material</div>
+      <div class="leg"><div class="leg-dot" style="background:#1D9E75"></div>Booby traps material</div>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+
+  <!-- BY MATERIAL -->
+  <div id="byMaterial" class="section">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Material</th><th>Craft</th><th>Total needed</th><th>Rate/hr</th><th>Assigned to</th><th>Each gathers</th><th>Hrs each</th></tr></thead>
+        <tbody id="matBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div id="summary" class="section">
+    <div class="stat-row" id="statRow"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Player</th><th>Role</th><th>Materials</th><th>Total hours</th></tr></thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EDIT ROSTER -->
+  <div id="editData" class="section">
+    <div class="notice">Edit the player lists below, then click <strong>Recalculate</strong>. One name per line.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div>
+        <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Viewfinder players</label>
+        <textarea id="vEdit" rows="20" style="width:100%;font-family:inherit;font-size:13px;padding:10px;border-radius:8px;border:1px solid #ccc;resize:vertical;"></textarea>
+      </div>
+      <div>
+        <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Booby trap players</label>
+        <textarea id="bEdit" rows="20" style="width:100%;font-family:inherit;font-size:13px;padding:10px;border-radius:8px;border:1px solid #ccc;resize:vertical;"></textarea>
+      </div>
+    </div>
+    <button onclick="applyEdit()" style="padding:9px 24px;background:#26215C;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">Recalculate</button>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  ROSTER DATA — edit player names here to update assignments
+// ═══════════════════════════════════════════════════════════════
+var V_PLAYERS = [
+  "TheRealTox","Warmonki","sundens","Xycrig","Indominus D",
+  "Breathyou","Darkshotz","Oddersfield","Contactu",
+  "Gradig","Carlut","Spider","nobodycares","Setesuyara","Chief Dwight","Wild Wolf"
+];
+
+var B_PLAYERS = [
+  "Da Lauser","Angelina",".Dante","Helsan","Xycrig",
+  "TrimPeachu","Dartzz","tophi","Wrigalz",
+  "mihaiash","Viriatus","Snelmarijn1"
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  MATERIAL DATA — edit totals / rates if your recipe changes
+// ═══════════════════════════════════════════════════════════════
+var V_MATS = [
+  {name:"Wood",                 total:500,  rph:42},
+  {name:"Granite",              total:200,  rph:25},
+  {name:"Semi-precious stones", total:200,  rph:6 },
+  {name:"Coal",                 total:100,  rph:15},
+  {name:"Jugs",                 total:200,  rph:8 },
+  {name:"Saw",                  total:200,  rph:5 },
+  {name:"Hammer",               total:200,  rph:12},
+  {name:"Nails",                total:600,  rph:19},
+  {name:"Iron rod",             total:100,  rph:15},
+  {name:"Lead",                 total:100,  rph:30},
+  {name:"White gloves",         total:100,  rph:6 }
+];
+
+var B_MATS = [
+  {name:"Granite",              total:100,  rph:25},
+  {name:"Dynamite",             total:1000, rph:14},
+  {name:"Jugs",                 total:200,  rph:8 },
+  {name:"Saws",                 total:200,  rph:5 },
+  {name:"Newspaper",            total:500,  rph:36},
+  {name:"Sledge hammer",        total:100,  rph:7 },
+  {name:"Glass of water",       total:100,  rph:36},
+  {name:"Snake skin",           total:100,  rph:7 },
+  {name:"Metal chips",          total:500,  rph:14},
+  {name:"Pinkerton emblems",    total:200,  rph:5 },
+  {name:"Blasting machines",    total:500,  rph:6 }
+];
+// ═══════════════════════════════════════════════════════════════
+
+function distribute(players, mats) {
+  var n = players.length;
+  if (n === 0) return {assignments:{}, playerHours:{}, matAssignments:[]};
+  var totalHours = mats.reduce(function(s,m){ return s + m.total/m.rph; }, 0);
+  var target = totalHours / n;
+  var playerHours = {};
+  players.forEach(function(p){ playerHours[p] = 0; });
+  var assignments = {};
+  players.forEach(function(p){ assignments[p] = []; });
+  var matAssignments = [];
+
+  mats.forEach(function(mat) {
+    var remaining = mat.total;
+    var assigns = [];
+    var iters = 0;
+    while (remaining > 0 && iters < n * 4) {
+      iters++;
+      var sorted = players.slice().sort(function(a,b){ return playerHours[a]-playerHours[b]; });
+      var p = sorted[0];
+      var slack = Math.max(0, target - playerHours[p]);
+      var giveHours = slack > 0 ? slack : (mat.total / mat.rph) / n;
+      var giveAmt = Math.min(remaining, Math.max(1, Math.round(giveHours * mat.rph)));
+      if (giveAmt > remaining) giveAmt = remaining;
+      var hrs = giveAmt / mat.rph;
+      var existing = assigns.find(function(a){ return a.player===p; });
+      if (existing) {
+        existing.amount += giveAmt;
+        existing.hours  += hrs;
+      } else {
+        assigns.push({player:p, amount:giveAmt, hours:hrs});
+      }
+      playerHours[p] += hrs;
+      remaining -= giveAmt;
+    }
+    if (remaining > 0) {
+      if (assigns.length > 0) {
+        assigns[assigns.length-1].amount += remaining;
+        assigns[assigns.length-1].hours  += remaining / mat.rph;
+        playerHours[assigns[assigns.length-1].player] += remaining / mat.rph;
+      } else {
+        assigns.push({player:players[0], amount:remaining, hours:remaining/mat.rph});
+        playerHours[players[0]] += remaining/mat.rph;
+      }
+    }
+    assigns.forEach(function(a){
+      assignments[a.player].push({mat:mat.name, amount:a.amount, hours:a.hours, craft:'v'});
+    });
+    matAssignments.push({mat:mat.name, total:mat.total, rph:mat.rph, assigns:assigns});
+  });
+  return {assignments:assignments, playerHours:playerHours, matAssignments:matAssignments};
+}
+
+var vRes, bRes;
+
+function recalc() {
+  vRes = distribute(V_PLAYERS, V_MATS);
+  bRes = distribute(B_PLAYERS, B_MATS);
+  // tag booby trap assignments
+  B_PLAYERS.forEach(function(p){
+    (bRes.assignments[p]||[]).forEach(function(a){ a.craft='b'; });
+  });
+  renderCards();
+  renderMaterials();
+  renderSummary();
+  // populate edit textareas
+  document.getElementById('vEdit').value = V_PLAYERS.join('\n');
+  document.getElementById('bEdit').value = B_PLAYERS.join('\n');
+}
+
+function initials(name) {
+  var parts = name.trim().split(/[\s.]+/);
+  var a = parts[0][0] || '';
+  var b = parts[1] ? parts[1][0] : (parts[0][1] || '');
+  return (a+b).toUpperCase();
+}
+
+function renderCards() {
+  var filter = document.getElementById('roleFilter').value;
+  var search = document.getElementById('searchBox').value.toLowerCase();
+  var grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+
+  var all = [];
+  V_PLAYERS.forEach(function(p){
+    var isBoth = B_PLAYERS.indexOf(p) !== -1;
+    var type = isBoth ? 'both' : 'v';
+    if (filter !== 'all' && filter !== type) return;
+    if (search && p.toLowerCase().indexOf(search) === -1) return;
+    var vA = (vRes.assignments[p]||[]).map(function(a){ return Object.assign({},a,{craft:'v'}); });
+    var bA = isBoth ? (bRes.assignments[p]||[]).map(function(a){ return Object.assign({},a,{craft:'b'}); }) : [];
+    var hrs = (vRes.playerHours[p]||0) + (isBoth ? bRes.playerHours[p]||0 : 0);
+    all.push({p:p, type:type, assigns:vA.concat(bA), hrs:hrs});
+  });
+  B_PLAYERS.forEach(function(p){
+    if (V_PLAYERS.indexOf(p) !== -1) return;
+    if (filter !== 'all' && filter !== 'b') return;
+    if (search && p.toLowerCase().indexOf(search) === -1) return;
+    var bA = (bRes.assignments[p]||[]).map(function(a){ return Object.assign({},a,{craft:'b'}); });
+    all.push({p:p, type:'b', assigns:bA, hrs:bRes.playerHours[p]||0});
+  });
+
+  all.forEach(function(pl) {
+    var avCls   = pl.type==='v' ? 'av-v' : pl.type==='b' ? 'av-b' : 'av-both';
+    var badgeCls= pl.type==='v' ? 'badge-v' : pl.type==='b' ? 'badge-b' : 'badge-both';
+    var roleLabel= pl.type==='v' ? 'Viewfinders' : pl.type==='b' ? 'Booby traps' : 'Both crafts';
+    var maxAmt  = Math.max.apply(null, pl.assigns.map(function(a){ return a.amount; }).concat([1]));
+
+    var matRows = pl.assigns.map(function(a){
+      var pct = Math.round(a.amount / maxAmt * 100);
+      var barCls = a.craft==='v' ? 'bar-v' : 'bar-b';
+      return '<div class="mat-row">'
+        +'<span class="mat-name" title="'+a.mat+'">'+a.mat+'</span>'
+        +'<div class="bar-wrap"><div class="bar '+barCls+'" style="width:'+pct+'%"></div></div>'
+        +'<span class="mat-amt">'+a.amount.toLocaleString()+'</span>'
+        +'<span class="mat-hrs">'+a.hours.toFixed(1)+'h</span>'
+        +'</div>';
+    }).join('');
+
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = '<div class="card-header">'
+      +'<div class="avatar '+avCls+'">'+initials(pl.p)+'</div>'
+      +'<div><div class="card-name">'+pl.p+'</div>'
+      +'<div class="card-meta"><span class="badge '+badgeCls+'">'+roleLabel+'</span> &nbsp;'+pl.hrs.toFixed(1)+' hrs</div>'
+      +'</div></div>'
+      +'<div class="mat-list">'+matRows+'</div>';
+    grid.appendChild(card);
+  });
+
+  if (grid.children.length === 0) {
+    grid.innerHTML = '<p style="color:#888;font-size:13px;padding:8px 0;">No players match the current filter.</p>';
+  }
+}
+
+function renderMaterials() {
+  var body = document.getElementById('matBody');
+  body.innerHTML = '';
+  var rows = vRes.matAssignments.map(function(m){ return Object.assign({},m,{craft:'Viewfinders',cls:'badge-v'}); })
+    .concat(bRes.matAssignments.map(function(m){ return Object.assign({},m,{craft:'Booby traps',cls:'badge-b'}); }));
+  rows.forEach(function(m){
+    var playerList = m.assigns.map(function(a){ return a.player; }).join(', ');
+    var eachAmt = m.assigns.length > 0 ? Math.round(m.total / m.assigns.length) : m.total;
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td style="font-weight:500">'+m.mat+'</td>'
+      +'<td><span class="badge '+m.cls+'">'+m.craft+'</span></td>'
+      +'<td>'+m.total.toLocaleString()+'</td>'
+      +'<td>'+m.rph+'/hr</td>'
+      +'<td style="color:#666;font-size:12px">'+playerList+'</td>'
+      +'<td>~'+eachAmt.toLocaleString()+'</td>'
+      +'<td>'+(eachAmt/m.rph).toFixed(1)+'h</td>';
+    body.appendChild(tr);
+  });
+}
+
+function renderSummary() {
+  var allVHrs = V_PLAYERS.map(function(p){ return vRes.playerHours[p]||0; });
+  var allBHrs = B_PLAYERS.map(function(p){ return bRes.playerHours[p]||0; });
+  var totalV = allVHrs.reduce(function(s,v){ return s+v; },0);
+  var totalB = allBHrs.reduce(function(s,v){ return s+v; },0);
+  var uniqueP = V_PLAYERS.concat(B_PLAYERS.filter(function(p){ return V_PLAYERS.indexOf(p)===-1; })).length;
+
+  document.getElementById('statRow').innerHTML =
+    stat('Total players', uniqueP)
+    + stat('Viewfinder hours', Math.round(totalV))
+    + stat('Booby trap hours', Math.round(totalB))
+    + stat('Avg hrs / player', ((totalV+totalB)/uniqueP).toFixed(1));
+
+  var body = document.getElementById('summaryBody');
+  body.innerHTML = '';
+  var rows = [];
+  V_PLAYERS.forEach(function(p){
+    var isBoth = B_PLAYERS.indexOf(p) !== -1;
+    var vH = vRes.playerHours[p]||0;
+    var bH = isBoth ? bRes.playerHours[p]||0 : 0;
+    var mats = (vRes.assignments[p]||[]).map(function(a){ return a.mat; });
+    if (isBoth) { (bRes.assignments[p]||[]).forEach(function(a){ mats.push(a.mat+' (B)'); }); }
+    rows.push({p:p, role:isBoth?'Both':'Viewfinders', hrs:vH+bH, mats:mats, type:isBoth?'both':'v'});
+  });
+  B_PLAYERS.filter(function(p){ return V_PLAYERS.indexOf(p)===-1; }).forEach(function(p){
+    var mats = (bRes.assignments[p]||[]).map(function(a){ return a.mat; });
+    rows.push({p:p, role:'Booby traps', hrs:bRes.playerHours[p]||0, mats:mats, type:'b'});
+  });
+  rows.sort(function(a,b){ return b.hrs-a.hrs; });
+  rows.forEach(function(r){
+    var bc = r.type==='v'?'badge-v':r.type==='b'?'badge-b':'badge-both';
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td style="font-weight:500">'+r.p+'</td>'
+      +'<td><span class="badge '+bc+'">'+r.role+'</span></td>'
+      +'<td style="color:#666;font-size:12px">'+r.mats.join(', ')+'</td>'
+      +'<td style="font-weight:500">'+r.hrs.toFixed(1)+'h</td>';
+    body.appendChild(tr);
+  });
+}
+
+function stat(label, val) {
+  return '<div class="stat"><div class="stat-label">'+label+'</div><div class="stat-val">'+val+'</div></div>';
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('show'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById(id).classList.add('show');
+  btn.classList.add('active');
+}
+
+function applyEdit() {
+  V_PLAYERS = document.getElementById('vEdit').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+  B_PLAYERS = document.getElementById('bEdit').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+  recalc();
+  alert('Recalculated! Switch to another tab to see results.');
+}
+
+recalc();
+</script>
+</body>
+</html>
