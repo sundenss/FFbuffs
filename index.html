@@ -7,80 +7,136 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;background:#f5f4f0;color:#1a1a18;min-height:100vh;}
-header{background:#26215C;color:#fff;padding:20px 24px 16px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-header h1{font-size:22px;font-weight:500;letter-spacing:-.3px;}
-header p{font-size:13px;opacity:.65;margin-top:3px;}
-.deadline-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:8px 14px;font-size:12px;color:#fff;text-align:right;white-space:nowrap;}
-.deadline-badge strong{display:block;font-size:15px;font-weight:500;}
-.container{max-width:980px;margin:0 auto;padding:24px 16px 60px;}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
-.tab{padding:7px 18px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:#555;font-family:inherit;transition:background .15s;}
+
+header{background:#26215C;color:#fff;padding:16px 20px 14px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+header h1{font-size:20px;font-weight:500;letter-spacing:-.3px;}
+header p{font-size:12px;opacity:.6;margin-top:2px;}
+.deadline-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 12px;font-size:12px;color:#fff;text-align:right;white-space:nowrap;}
+.deadline-badge strong{display:block;font-size:14px;font-weight:500;}
+
+/* announcement */
+#announcementBar{display:none;background:#FAEEDA;border-bottom:1px solid #f5d98a;padding:10px 20px;font-size:13px;color:#633806;align-items:center;gap:10px;}
+#announcementBar span{flex:1;}
+
+.container{max-width:980px;margin:0 auto;padding:20px 16px 60px;}
+
+/* tabs */
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+.tab{padding:7px 15px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:#555;font-family:inherit;white-space:nowrap;flex-shrink:0;}
 .tab:hover{background:#ededea;}
 .tab.active{background:#26215C;color:#fff;border-color:#26215C;font-weight:500;}
 .section{display:none;}
 .section.show{display:block;}
-.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
-.stat{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e4e3df;}
-.stat-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
-.stat-val{font-size:26px;font-weight:500;color:#26215C;}
-.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+
+/* stats */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:18px;}
+.stat{background:#fff;border-radius:10px;padding:12px 14px;border:1px solid #e4e3df;}
+.stat-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.stat-val{font-size:24px;font-weight:500;color:#26215C;}
+
+/* filter */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
 .filter-bar label{font-size:13px;color:#666;}
-select,input[type=text],input[type=password]{font-family:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;cursor:pointer;}
-.search-box{width:180px;}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
-.card{background:#fff;border-radius:12px;border:1px solid #e4e3df;padding:16px;}
-.card-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+select,input[type=text],input[type=password]{font-family:inherit;font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;}
+.search-box{width:160px;}
+
+/* cards grid */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.card{background:#fff;border-radius:12px;border:1px solid #e4e3df;padding:14px;}
+.card.alert-card{border-color:#f5c6c6;background:#fffafa;}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
 .av-v{background:#EEEDFE;color:#3C3489;}
 .av-b{background:#E1F5EE;color:#085041;}
 .av-both{background:#FAEEDA;color:#633806;}
 .card-name{font-size:14px;font-weight:500;}
-.card-meta{font-size:12px;color:#888;margin-top:1px;}
-.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;font-weight:500;}
+.card-meta{font-size:12px;color:#888;margin-top:1px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:6px;font-weight:500;}
 .badge-v{background:#EEEDFE;color:#3C3489;}
 .badge-b{background:#E1F5EE;color:#085041;}
 .badge-both{background:#FAEEDA;color:#633806;}
-.progress-bar-wrap{height:4px;background:#ededea;border-radius:4px;margin-bottom:12px;overflow:hidden;}
+.badge-alert{background:#FCEBEB;color:#A32D2D;}
+.progress-bar-wrap{height:4px;background:#ededea;border-radius:4px;margin-bottom:10px;overflow:hidden;}
 .progress-bar-fill{height:4px;border-radius:4px;background:#26215C;transition:width .4s;}
 
-/* material task rows */
-.mat-task{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;border:1px solid transparent;transition:background .15s,border-color .15s;cursor:pointer;user-select:none;}
+/* mat tasks */
+.mat-task{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:8px;border:1px solid transparent;transition:background .15s;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;}
 .mat-task:hover{background:#f9f8f5;border-color:#e4e3df;}
 .mat-task.done{background:#f0faf5;border-color:#9FE1CB;}
 .mat-img{width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;background:#f0efe9;}
 .mat-img-placeholder{width:36px;height:36px;border-radius:6px;background:#ededea;flex-shrink:0;}
 .mat-info{flex:1;min-width:0;}
-.mat-name{font-size:12px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mat-sub{font-size:11px;color:#999;margin-top:1px;}
-.mat-check{width:22px;height:22px;border-radius:6px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,border-color .15s;}
+.mat-name-row{font-size:13px;color:#333;display:flex;align-items:center;gap:5px;}
+.craft-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.mat-sub{font-size:11px;color:#999;margin-top:2px;}
+.mat-check{width:24px;height:24px;border-radius:6px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
 .mat-task.done .mat-check{background:#1D9E75;border-color:#1D9E75;}
 .check-svg{display:none;}
 .mat-task.done .check-svg{display:block;}
+.mat-list{display:flex;flex-direction:column;gap:5px;}
 
 /* table */
-.table-wrap{background:#fff;border-radius:12px;border:1px solid #e4e3df;overflow-x:auto;}
+.table-wrap{background:#fff;border-radius:12px;border:1px solid #e4e3df;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
-th{text-align:left;padding:10px 14px;font-weight:500;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e4e3df;white-space:nowrap;}
-td{padding:10px 14px;border-bottom:1px solid #f0efe9;vertical-align:middle;}
+th{text-align:left;padding:10px 12px;font-weight:500;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #e4e3df;white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid #f0efe9;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#faf9f6;}
 
-.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:16px;}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
 .leg{display:flex;align-items:center;gap:6px;font-size:12px;color:#666;}
-.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.notice{background:#fff8ec;border:1px solid #f5d98a;border-radius:8px;padding:10px 14px;font-size:13px;color:#7a5c00;margin-bottom:16px;}
-.pw-overlay{background:#f5f4f0;border-radius:12px;padding:40px 24px;text-align:center;border:1px solid #e4e3df;}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* alert banner */
+.alert-banner{background:#FCEBEB;border:1px solid #f09595;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:none;}
+.alert-banner h3{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px;}
+.alert-names{display:flex;flex-wrap:wrap;gap:6px;}
+
+/* pw / edit */
+.pw-overlay{background:#f5f4f0;border-radius:12px;padding:36px 24px;text-align:center;border:1px solid #e4e3df;}
 .pw-overlay h3{font-size:16px;font-weight:500;margin-bottom:8px;color:#26215C;}
-.pw-overlay p{font-size:13px;color:#888;margin-bottom:18px;}
-.pw-row{display:flex;gap:8px;justify-content:center;align-items:center;}
-.btn{padding:8px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;border:1px solid #ccc;background:#fff;color:#444;}
+.pw-overlay p{font-size:13px;color:#888;margin-bottom:16px;}
+.pw-row{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;}
+.btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;border:1px solid #ccc;background:#fff;color:#444;}
 .btn:hover{background:#ededea;}
 .btn-primary{background:#26215C;color:#fff;border-color:#26215C;}
 .btn-primary:hover{background:#3C3489;}
 .err-msg{font-size:12px;color:#c0392b;margin-top:8px;min-height:16px;}
 textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radius:8px;border:1px solid #ccc;resize:vertical;color:#1a1a18;background:#fff;}
+
+/* history */
+.period-selector{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.history-empty{text-align:center;padding:40px;color:#888;font-size:13px;}
+
+/* loading */
 .loading{text-align:center;padding:40px;color:#888;font-size:13px;}
-@media(max-width:520px){.cards-grid{grid-template-columns:1fr;}}
+
+/* mobile */
+@media(max-width:600px){
+  header{padding:12px 14px 10px;}
+  header h1{font-size:17px;}
+  .deadline-badge{padding:6px 10px;font-size:11px;}
+  .deadline-badge strong{font-size:13px;}
+  .container{padding:14px 10px 50px;}
+  .tabs{gap:4px;}
+  .tab{padding:6px 11px;font-size:12px;}
+  .cards-grid{grid-template-columns:1fr;gap:10px;}
+  .card{padding:12px;}
+  .mat-task{padding:9px 6px;}
+  .mat-img{width:40px;height:40px;}
+  .mat-name-row{font-size:13px;}
+  .mat-sub{font-size:12px;}
+  .mat-check{width:28px;height:28px;border-radius:7px;}
+  .stat-val{font-size:20px;}
+  .filter-bar{gap:6px;}
+  .search-box{width:140px;}
+  table{font-size:12px;}
+  th,td{padding:8px 9px;}
+}
+@media(max-width:380px){
+  .tab{padding:5px 9px;font-size:11px;}
+  .cards-grid{gap:8px;}
+}
 </style>
 </head>
 <body>
@@ -96,16 +152,25 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
   </div>
 </header>
 
+<div id="announcementBar" style="display:none;background:#FAEEDA;border-bottom:1px solid #f5d98a;padding:10px 20px;font-size:13px;color:#633806;display:none;align-items:center;gap:10px;">
+  <span id="announcementText"></span>
+</div>
+
 <div class="container">
   <div class="tabs">
     <button class="tab active" onclick="switchTab('byPlayer',this)">By player</button>
     <button class="tab" onclick="switchTab('byMaterial',this)">By material</button>
     <button class="tab" onclick="switchTab('summary',this)">Summary</button>
+    <button class="tab" onclick="switchTab('history',this)">History</button>
     <button class="tab" onclick="switchTab('editData',this)">Edit roster</button>
   </div>
 
   <!-- BY PLAYER -->
   <div id="byPlayer" class="section show">
+    <div id="alertBanner" class="alert-banner">
+      <h3 id="alertTitle"></h3>
+      <div class="alert-names" id="alertNames"></div>
+    </div>
     <div class="filter-bar">
       <label>Filter:</label>
       <select id="roleFilter" onchange="renderCards()">
@@ -113,6 +178,7 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
         <option value="v">Viewfinders only</option>
         <option value="b">Booby traps only</option>
         <option value="both">Mixed assignment</option>
+        <option value="alert">Late / missing</option>
       </select>
       <input type="text" class="search-box" id="searchBox" placeholder="Search player..." oninput="renderCards()">
     </div>
@@ -127,7 +193,7 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
   <div id="byMaterial" class="section">
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Material</th><th>Craft</th><th>Total needed</th><th>Rate/hr</th><th>Assigned to</th><th>Each gathers</th><th>Hrs each</th></tr></thead>
+        <thead><tr><th>Material</th><th>Craft</th><th>Total</th><th>Rate/hr</th><th>Assigned to</th><th>Each</th><th>Hrs</th></tr></thead>
         <tbody id="matBody"></tbody>
       </table>
     </div>
@@ -138,10 +204,21 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
     <div class="stat-row" id="statRow"></div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Player</th><th>Assignment</th><th>Materials</th><th>Total hours</th><th>Progress</th></tr></thead>
+        <thead><tr><th>Player</th><th>Assignment</th><th>Materials</th><th>Hours</th><th>Progress</th></tr></thead>
         <tbody id="summaryBody"></tbody>
       </table>
     </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="history" class="section">
+    <div class="period-selector">
+      <label style="font-size:13px;color:#666;">Period:</label>
+      <select id="historyPeriod" onchange="renderHistory()">
+        <option value="">Loading...</option>
+      </select>
+    </div>
+    <div id="historyContent"><div class="history-empty">Select a period above.</div></div>
   </div>
 
   <!-- EDIT ROSTER -->
@@ -150,43 +227,53 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
       <h3>Roster editing is locked</h3>
       <p>Enter the password to make changes.</p>
       <div class="pw-row">
-        <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()" style="width:200px;">
+        <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()" style="width:190px;">
         <button class="btn btn-primary" onclick="checkPw()">Unlock</button>
       </div>
       <div class="err-msg" id="pwErr"></div>
     </div>
     <div id="editForm" style="display:none;">
-      <div class="notice">Edit the player lists below, then click <strong>Recalculate</strong>. One name per line.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div style="background:#fff8ec;border:1px solid #f5d98a;border-radius:8px;padding:10px 14px;font-size:13px;color:#7a5c00;margin-bottom:16px;">
+        Edit player lists below and click <strong>Recalculate</strong>. One name per line.
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Announcement banner <span style="font-weight:400;color:#888;">(shown to all players — leave empty to hide)</span></label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="announcementInput" placeholder="e.g. Deadline moved to the 16th! Focus on booby traps first." style="flex:1;padding:8px 12px;">
+          <button class="btn btn-primary" onclick="saveAnnouncement()">Save</button>
+          <button class="btn" onclick="clearAnnouncement()">Clear</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
         <div>
           <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Viewfinder players</label>
-          <textarea id="vEdit" rows="20"></textarea>
+          <textarea id="vEdit" rows="18"></textarea>
         </div>
         <div>
           <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Booby trap players</label>
-          <textarea id="bEdit" rows="20"></textarea>
+          <textarea id="bEdit" rows="18"></textarea>
         </div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="applyEdit()">Recalculate</button>
         <button class="btn" onclick="lockEdit()">Lock</button>
-        <button class="btn" onclick="resetChecks()" style="color:#c0392b;border-color:#f5c6c6;">Reset all checkmarks</button>
+        <button class="btn" onclick="resetChecks()" style="color:#A32D2D;border-color:#f5c6c6;">Reset checkmarks</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Firebase -->
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-database-compat.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════
-//  FIREBASE CONFIG
+//  FIREBASE
 // ═══════════════════════════════════════════════════
-var firebaseConfig = {
-  databaseURL: "https://the-west-schedule-default-rtdb.europe-west1.firebasedatabase.app/"
-};
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp({
+  databaseURL:"https://the-west-schedule-default-rtdb.europe-west1.firebasedatabase.app/"
+});
 var db = firebase.database();
 
 // ═══════════════════════════════════════════════════
@@ -236,91 +323,105 @@ var B_MATS = [
 // ═══════════════════════════════════════════════════
 
 var PW = "letmein123";
-var checks = {};   // { "PlayerName|MatName": true }
+var checks = {};
 var RES;
 
-// ── deadline helpers ──────────────────────────────
-function getPeriodKey() {
-  var now = new Date();
-  var y = now.getFullYear();
-  var m = now.getMonth()+1;
-  var d = now.getDate();
-  var half = d <= 15 ? 1 : 2;
-  return y+'-'+m+'-'+half;
+// ── period / deadline ─────────────────────────────
+function getPeriodKey(){
+  var n=new Date();
+  return n.getFullYear()+'-'+(n.getMonth()+1)+'-'+(n.getDate()<=15?1:2);
 }
-
-function getNextDeadline() {
-  var now = new Date();
-  var y = now.getFullYear();
-  var m = now.getMonth();
-  var d = now.getDate();
-  var target;
-  if (d <= 15) {
-    target = new Date(y, m, 15);
-  } else {
-    target = new Date(y, m+1, 0); // last day of month = 28/29/30/31, we use 30
-    target = new Date(y, m, 30);
-    if (target.getMonth() !== m) target = new Date(y, m+1, 0);
+function periodLabel(key){
+  var p=key.split('-');
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[parseInt(p[1])-1]+' '+p[0]+' ('+(p[2]==='1'?'1st–15th':'16th–end')+')';
+}
+function getNextDeadline(){
+  var n=new Date(),y=n.getFullYear(),m=n.getMonth(),d=n.getDate();
+  if(d<=15) return new Date(y,m,15);
+  var last=new Date(y,m+1,0).getDate();
+  return new Date(y,m,Math.min(30,last));
+}
+function daysUntil(date){
+  return Math.ceil((date-new Date())/86400000);
+}
+function isAlertActive(){
+  // warn if <=3 days to deadline
+  return daysUntil(getNextDeadline())<=3;
+}
+function updateDeadlineDisplay(){
+  var dl=getNextDeadline();
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('nextDeadline').textContent=months[dl.getMonth()]+' '+dl.getDate();
+  var d=daysUntil(dl);
+  document.getElementById('daysLeft').textContent=d>0?d+' days left':'Today!';
+  if(d<=3){
+    document.getElementById('nextDeadline').parentElement.style.background='rgba(224,74,74,.25)';
+    document.getElementById('nextDeadline').parentElement.style.borderColor='rgba(255,150,150,.4)';
   }
-  return target;
 }
 
-function updateDeadlineDisplay() {
-  var dl = getNextDeadline();
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('nextDeadline').textContent = months[dl.getMonth()]+' '+dl.getDate();
-  var diff = Math.ceil((dl - new Date()) / 86400000);
-  document.getElementById('daysLeft').textContent = diff > 0 ? diff+' days left' : 'Today!';
-}
-
-// ── firebase: period-scoped checks ───────────────
-var periodKey = getPeriodKey();
-var checksRef = db.ref('checks/'+periodKey);
-
-checksRef.on('value', function(snap) {
-  checks = snap.val() || {};
-  if (RES) { renderCards(); renderSummary(); }
+// ── firebase listeners ────────────────────────────
+var periodKey=getPeriodKey();
+var checksRef=db.ref('checks/'+periodKey);
+checksRef.on('value',function(snap){
+  checks=snap.val()||{};
+  if(RES){renderCards();renderSummary();}
 });
 
-function toggleCheck(player, mat) {
-  var key = player.replace(/[.#$/\[\]]/g,'_')+'|'+mat.replace(/[.#$/\[\]]/g,'_');
-  if (checks[key]) {
-    checksRef.child(key).remove();
+var announcementRef=db.ref('announcement');
+announcementRef.on('value',function(snap){
+  var txt=snap.val()||'';
+  var bar=document.getElementById('announcementBar');
+  if(txt){
+    document.getElementById('announcementText').textContent=txt;
+    bar.style.display='flex';
+    document.getElementById('announcementInput').value=txt;
   } else {
-    checksRef.child(key).set(true);
+    bar.style.display='none';
   }
+});
+
+function saveAnnouncement(){
+  var txt=document.getElementById('announcementInput').value.trim();
+  announcementRef.set(txt||null);
+}
+function clearAnnouncement(){
+  document.getElementById('announcementInput').value='';
+  announcementRef.remove();
 }
 
-function isChecked(player, mat) {
-  var key = player.replace(/[.#$/\[\]]/g,'_')+'|'+mat.replace(/[.#$/\[\]]/g,'_');
-  return !!checks[key];
+function toggleCheck(player,mat){
+  var key=safeKey(player)+'|'+safeKey(mat);
+  if(checks[key]) checksRef.child(key).remove();
+  else checksRef.child(key).set(true);
 }
-
-function resetChecks() {
-  if (!confirm('Reset ALL checkmarks for the current period?')) return;
+function isChecked(player,mat){
+  return !!checks[safeKey(player)+'|'+safeKey(mat)];
+}
+function safeKey(s){return s.replace(/[.#$\/\[\]]/g,'_');}
+function resetChecks(){
+  if(!confirm('Reset ALL checkmarks for the current period?'))return;
   checksRef.remove();
 }
 
 // ── distribution ──────────────────────────────────
-function allPlayers() {
-  var seen = {}, pool = [];
+function allPlayers(){
+  var seen={},pool=[];
   V_PLAYERS.concat(B_PLAYERS).forEach(function(p){if(!seen[p]){seen[p]=true;pool.push(p);}});
   return pool;
 }
-
-function poolDistribute() {
-  var players = allPlayers();
-  var n = players.length;
-  var allMats = V_MATS.map(function(m){return Object.assign({},m,{craft:'v'});})
-               .concat(B_MATS.map(function(m){return Object.assign({},m,{craft:'b'});}));
-  var totalHours = allMats.reduce(function(s,m){return s+m.total/m.rph;},0);
-  var target = totalHours/n;
-  var playerHours={}, assignments={};
+function poolDistribute(){
+  var players=allPlayers(),n=players.length;
+  var allMats=V_MATS.map(function(m){return Object.assign({},m,{craft:'v'});})
+              .concat(B_MATS.map(function(m){return Object.assign({},m,{craft:'b'});}));
+  var totalHours=allMats.reduce(function(s,m){return s+m.total/m.rph;},0);
+  var target=totalHours/n;
+  var playerHours={},assignments={};
   players.forEach(function(p){playerHours[p]=0;assignments[p]=[];});
   var matAssignments=[];
-
   allMats.forEach(function(mat){
-    var remaining=mat.total, assigns=[], safety=0;
+    var remaining=mat.total,assigns=[],safety=0;
     while(remaining>0&&safety++<n*6){
       var sorted=players.slice().sort(function(a,b){return playerHours[a]-playerHours[b];});
       var p=sorted[0];
@@ -332,7 +433,7 @@ function poolDistribute() {
       var ex=assigns.find(function(a){return a.player===p;});
       if(ex){ex.amount+=giveAmt;ex.hours+=hrs;}
       else{assigns.push({player:p,amount:giveAmt,hours:hrs});}
-      playerHours[p]+=hrs; remaining-=giveAmt;
+      playerHours[p]+=hrs;remaining-=giveAmt;
     }
     if(remaining>0){
       var last=assigns[assigns.length-1]||{player:players[0],amount:0,hours:0};
@@ -345,9 +446,8 @@ function poolDistribute() {
     });
     matAssignments.push({mat:mat.name,total:mat.total,rph:mat.rph,craft:mat.craft,img:mat.img,assigns:assigns});
   });
-  return {assignments:assignments,playerHours:playerHours,matAssignments:matAssignments,target:target};
+  return{assignments:assignments,playerHours:playerHours,matAssignments:matAssignments,target:target};
 }
-
 function recalc(){
   RES=poolDistribute();
   renderCards();renderMaterials();renderSummary();
@@ -357,8 +457,8 @@ function recalc(){
 
 // ── helpers ───────────────────────────────────────
 function initials(name){
-  var parts=name.trim().split(/[\s.]+/);
-  return((parts[0][0]||'')+(parts[1]?parts[1][0]:parts[0][1]||'')).toUpperCase();
+  var p=name.trim().split(/[\s.]+/);
+  return((p[0][0]||'')+(p[1]?p[1][0]:p[0][1]||'')).toUpperCase();
 }
 function assignmentType(assigns){
   var v=assigns.some(function(a){return a.craft==='v';}),
@@ -368,9 +468,32 @@ function assignmentType(assigns){
 function stat(label,val){
   return'<div class="stat"><div class="stat-label">'+label+'</div><div class="stat-val">'+val+'</div></div>';
 }
+function playerIsLate(p){
+  if(!isAlertActive())return false;
+  var assigns=RES.assignments[p]||[];
+  var done=assigns.filter(function(a){return isChecked(p,a.mat);}).length;
+  return done===0&&assigns.length>0;
+}
+
+// ── render: alert banner ──────────────────────────
+function renderAlertBanner(){
+  var players=allPlayers();
+  var late=players.filter(playerIsLate);
+  var banner=document.getElementById('alertBanner');
+  if(!late.length||!isAlertActive()){banner.style.display='none';return;}
+  banner.style.display='block';
+  var d=daysUntil(getNextDeadline());
+  document.getElementById('alertTitle').textContent=
+    d<=0?'Deadline is today! These players have not started yet:':
+    'Deadline in '+d+' day'+(d===1?'':'s')+'! No progress yet from:';
+  document.getElementById('alertNames').innerHTML=late.map(function(p){
+    return'<span class="badge badge-alert">'+p+'</span>';
+  }).join('');
+}
 
 // ── render: by player ─────────────────────────────
 function renderCards(){
+  renderAlertBanner();
   var filter=document.getElementById('roleFilter').value;
   var search=document.getElementById('searchBox').value.toLowerCase();
   var grid=document.getElementById('cardsGrid');
@@ -380,52 +503,57 @@ function renderCards(){
   players.forEach(function(p){
     var assigns=RES.assignments[p]||[];
     var aType=assignmentType(assigns);
-    if(filter!=='all'&&filter!==aType)return;
+    var late=playerIsLate(p);
+    if(filter==='alert'&&!late)return;
+    if(filter!=='all'&&filter!=='alert'&&filter!==aType)return;
     if(search&&p.toLowerCase().indexOf(search)===-1)return;
 
     var hrs=RES.playerHours[p]||0;
     var avCls=aType==='v'?'av-v':aType==='b'?'av-b':'av-both';
     var badgeCls=aType==='v'?'badge-v':aType==='b'?'badge-b':'badge-both';
     var roleLabel=aType==='v'?'Viewfinders':aType==='b'?'Booby traps':'Mixed';
-
-    var doneCount=assigns.filter(function(a){return isChecked(p,a.mat);}).length;
-    var pct=assigns.length?Math.round(doneCount/assigns.length*100):0;
-
-    var card=document.createElement('div');
-    card.className='card';
+    var done=assigns.filter(function(a){return isChecked(p,a.mat);}).length;
+    var pct=assigns.length?Math.round(done/assigns.length*100):0;
 
     var matRows=assigns.map(function(a){
-      var done=isChecked(p,a.mat);
+      var chk=isChecked(p,a.mat);
       var imgEl=a.img
         ?'<img class="mat-img" src="'+a.img+'" alt="'+a.mat+'" width="36" height="36" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'">'
          +'<div class="mat-img-placeholder" style="display:none"></div>'
         :'<div class="mat-img-placeholder"></div>';
-      var craftDot='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+(a.craft==='v'?'#7F77DD':'#1D9E75')+';margin-right:3px;vertical-align:middle;"></span>';
-      return '<div class="mat-task'+(done?' done':'')+'" onclick="toggleCheck(\''+p.replace(/'/g,"\\'")+'\',' +'\''+a.mat.replace(/'/g,"\\'")+'\')' +'">'
+      var dotColor=a.craft==='v'?'#7F77DD':'#1D9E75';
+      var esc=p.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      var matEsc=a.mat.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return'<div class="mat-task'+(chk?' done':'')+'" onclick="toggleCheck(\''+esc+'\',\''+matEsc+'\')">'
         +imgEl
         +'<div class="mat-info">'
-          +'<div class="mat-name">'+craftDot+a.mat+'</div>'
+          +'<div class="mat-name-row"><span class="craft-dot" style="background:'+dotColor+'"></span>'+a.mat+'</div>'
           +'<div class="mat-sub">'+a.amount.toLocaleString()+' pcs &middot; '+a.hours.toFixed(1)+'h</div>'
         +'</div>'
         +'<div class="mat-check">'
-          +'<svg class="check-svg" width="12" height="12" viewBox="0 0 12 12" fill="none">'
-            +'<polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+          +'<svg class="check-svg" width="13" height="13" viewBox="0 0 12 12" fill="none">'
+            +'<polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'
           +'</svg>'
         +'</div>'
       +'</div>';
     }).join('');
 
+    var card=document.createElement('div');
+    card.className='card'+(late?' alert-card':'');
     card.innerHTML='<div class="card-header">'
       +'<div class="avatar '+avCls+'">'+initials(p)+'</div>'
       +'<div style="flex:1;min-width:0;">'
         +'<div class="card-name">'+p+'</div>'
-        +'<div class="card-meta"><span class="badge '+badgeCls+'">'+roleLabel+'</span>&nbsp; '+hrs.toFixed(1)+' hrs</div>'
+        +'<div class="card-meta">'
+          +'<span class="badge '+badgeCls+'">'+roleLabel+'</span>'
+          +hrs.toFixed(1)+' hrs'
+          +(late?'<span class="badge badge-alert">No progress</span>':'')
+        +'</div>'
       +'</div>'
-      +'<div style="font-size:12px;font-weight:500;color:#26215C;white-space:nowrap;">'+doneCount+'/'+assigns.length+'</div>'
+      +'<div style="font-size:12px;font-weight:500;color:#26215C;white-space:nowrap;">'+done+'/'+assigns.length+'</div>'
     +'</div>'
     +'<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct+'%"></div></div>'
     +'<div class="mat-list">'+matRows+'</div>';
-
     grid.appendChild(card);
   });
 
@@ -439,19 +567,19 @@ function renderMaterials(){
   var body=document.getElementById('matBody');
   body.innerHTML='';
   RES.matAssignments.forEach(function(m){
-    var playerList=m.assigns.map(function(a){return a.player;}).join(', ');
-    var eachAmt=m.assigns.length?Math.round(m.total/m.assigns.length):m.total;
+    var pl=m.assigns.map(function(a){return a.player;}).join(', ');
+    var each=m.assigns.length?Math.round(m.total/m.assigns.length):m.total;
     var bc=m.craft==='v'?'badge-v':'badge-b';
     var label=m.craft==='v'?'Viewfinders':'Booby traps';
-    var imgCell=m.img?'<img src="'+m.img+'" width="28" height="28" style="border-radius:4px;vertical-align:middle;" onerror="this.style.display=\'none\'">':'';
+    var imgCell=m.img?'<img src="'+m.img+'" width="26" height="26" style="border-radius:4px;vertical-align:middle;margin-right:6px;" onerror="this.style.display=\'none\'">':'';
     var tr=document.createElement('tr');
-    tr.innerHTML='<td style="font-weight:500">'+imgCell+' '+m.mat+'</td>'
+    tr.innerHTML='<td style="font-weight:500">'+imgCell+m.mat+'</td>'
       +'<td><span class="badge '+bc+'">'+label+'</span></td>'
       +'<td>'+m.total.toLocaleString()+'</td>'
       +'<td>'+m.rph+'/hr</td>'
-      +'<td style="color:#666;font-size:12px">'+playerList+'</td>'
-      +'<td>~'+eachAmt.toLocaleString()+'</td>'
-      +'<td>'+(eachAmt/m.rph).toFixed(1)+'h</td>';
+      +'<td style="color:#666;font-size:12px">'+pl+'</td>'
+      +'<td>~'+each.toLocaleString()+'</td>'
+      +'<td>'+(each/m.rph).toFixed(1)+'h</td>';
     body.appendChild(tr);
   });
 }
@@ -461,18 +589,15 @@ function renderSummary(){
   var players=allPlayers();
   var totalHrs=players.reduce(function(s,p){return s+(RES.playerHours[p]||0);},0);
   var target=RES.target;
-  var hrsArr=players.map(function(p){return RES.playerHours[p]||0;});
-  var minH=Math.min.apply(null,hrsArr),maxH=Math.max.apply(null,hrsArr);
   var totalTasks=players.reduce(function(s,p){return s+(RES.assignments[p]||[]).length;},0);
   var doneTasks=players.reduce(function(s,p){
     return s+(RES.assignments[p]||[]).filter(function(a){return isChecked(p,a.mat);}).length;
   },0);
-
   document.getElementById('statRow').innerHTML=
-    stat('Total players',players.length)
+    stat('Players',players.length)
     +stat('Total hours',Math.round(totalHrs))
-    +stat('Target / player',target.toFixed(1)+'h')
-    +stat('Overall progress',doneTasks+'/'+totalTasks);
+    +stat('Target/player',target.toFixed(1)+'h')
+    +stat('Overall',doneTasks+'/'+totalTasks);
 
   var body=document.getElementById('summaryBody');
   body.innerHTML='';
@@ -483,7 +608,7 @@ function renderSummary(){
     var pct=assigns.length?Math.round(done/assigns.length*100):0;
     var mats=assigns.map(function(a){
       var ck=isChecked(p,a.mat);
-      return'<span class="badge '+(a.craft==='v'?'badge-v':'badge-b')+'" style="margin:1px 2px;font-size:10px;'+(ck?'opacity:.45;text-decoration:line-through;':'')+'">'+a.mat+'</span>';
+      return'<span class="badge '+(a.craft==='v'?'badge-v':'badge-b')+'" style="margin:1px 2px;font-size:10px;'+(ck?'opacity:.4;text-decoration:line-through;':'')+'">'+a.mat+'</span>';
     }).join(' ');
     return{p:p,aType:aType,hrs:RES.playerHours[p]||0,mats:mats,done:done,total:assigns.length,pct:pct};
   });
@@ -492,10 +617,9 @@ function renderSummary(){
     var bc=r.aType==='v'?'badge-v':r.aType==='b'?'badge-b':'badge-both';
     var label=r.aType==='v'?'Viewfinders':r.aType==='b'?'Booby traps':'Mixed';
     var diff=r.hrs-target;
-    var diffStr=(diff>=0?'+':'')+diff.toFixed(1)+'h';
     var diffColor=Math.abs(diff)<1?'#3B6D11':Math.abs(diff)<3?'#7a5c00':'#c0392b';
-    var progressCol='<div style="display:flex;align-items:center;gap:8px;">'
-      +'<div style="flex:1;min-width:60px;height:5px;background:#ededea;border-radius:4px;overflow:hidden;">'
+    var prog='<div style="display:flex;align-items:center;gap:7px;">'
+      +'<div style="flex:1;min-width:55px;height:5px;background:#ededea;border-radius:4px;overflow:hidden;">'
         +'<div style="width:'+r.pct+'%;height:5px;background:#1D9E75;border-radius:4px;"></div>'
       +'</div>'
       +'<span style="font-size:12px;color:#666;white-space:nowrap;">'+r.done+'/'+r.total+'</span>'
@@ -504,9 +628,62 @@ function renderSummary(){
     tr.innerHTML='<td style="font-weight:500">'+r.p+'</td>'
       +'<td><span class="badge '+bc+'">'+label+'</span></td>'
       +'<td style="font-size:12px;line-height:2">'+r.mats+'</td>'
-      +'<td><span style="font-weight:500">'+r.hrs.toFixed(1)+'h</span> <span style="font-size:11px;color:'+diffColor+'">'+diffStr+'</span></td>'
-      +'<td style="min-width:100px;">'+progressCol+'</td>';
+      +'<td><span style="font-weight:500">'+r.hrs.toFixed(1)+'h</span> <span style="font-size:11px;color:'+diffColor+'">'+(diff>=0?'+':'')+diff.toFixed(1)+'h</span></td>'
+      +'<td style="min-width:90px;">'+prog+'</td>';
     body.appendChild(tr);
+  });
+}
+
+// ── render: history ───────────────────────────────
+function loadHistoryPeriods(){
+  db.ref('checks').once('value',function(snap){
+    var data=snap.val()||{};
+    var keys=Object.keys(data).sort().reverse();
+    var sel=document.getElementById('historyPeriod');
+    if(!keys.length){sel.innerHTML='<option>No history yet</option>';return;}
+    sel.innerHTML=keys.map(function(k){
+      return'<option value="'+k+'"'+(k===periodKey?' (current)':'')+'>'+periodLabel(k)+(k===periodKey?' — current':'')+'</option>';
+    }).join('');
+    renderHistory();
+  });
+}
+function renderHistory(){
+  var key=document.getElementById('historyPeriod').value;
+  if(!key){return;}
+  db.ref('checks/'+key).once('value',function(snap){
+    var data=snap.val()||{};
+    var players=allPlayers();
+    var container=document.getElementById('historyContent');
+    if(!Object.keys(data).length){
+      container.innerHTML='<div class="history-empty">No checkmarks recorded for this period.</div>';
+      return;
+    }
+    var rows=players.map(function(p){
+      var assigns=RES.assignments[p]||[];
+      var done=assigns.filter(function(a){return !!data[safeKey(p)+'|'+safeKey(a.mat)];}).length;
+      var pct=assigns.length?Math.round(done/assigns.length*100):0;
+      var color=pct===100?'#1D9E75':pct>=50?'#BA7517':'#E24B4A';
+      return{p:p,done:done,total:assigns.length,pct:pct,color:color};
+    }).sort(function(a,b){return b.pct-a.pct;});
+
+    var html='<div class="table-wrap"><table>'
+      +'<thead><tr><th>Player</th><th>Completed</th><th>Progress</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      html+='<tr>'
+        +'<td style="font-weight:500">'+r.p+'</td>'
+        +'<td>'+r.done+' / '+r.total+'</td>'
+        +'<td style="min-width:130px;">'
+          +'<div style="display:flex;align-items:center;gap:8px;">'
+            +'<div style="flex:1;height:6px;background:#ededea;border-radius:4px;overflow:hidden;">'
+              +'<div style="width:'+r.pct+'%;height:6px;background:'+r.color+';border-radius:4px;"></div>'
+            +'</div>'
+            +'<span style="font-size:12px;color:#666;white-width:nowrap;">'+r.pct+'%</span>'
+          +'</div>'
+        +'</td>'
+      +'</tr>';
+    });
+    html+='</tbody></table></div>';
+    container.innerHTML=html;
   });
 }
 
@@ -516,6 +693,7 @@ function switchTab(id,btn){
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById(id).classList.add('show');
   btn.classList.add('active');
+  if(id==='history')loadHistoryPeriods();
 }
 function checkPw(){
   if(document.getElementById('pwInput').value===PW){
