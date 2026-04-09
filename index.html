@@ -5,82 +5,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The West — Crafting Schedule</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; background: #f5f4f0; color: #1a1a18; min-height: 100vh; }
-  a { color: inherit; }
-
-  /* ── layout ── */
-  header { background: #26215C; color: #fff; padding: 20px 24px 16px; }
-  header h1 { font-size: 22px; font-weight: 500; letter-spacing: -.3px; }
-  header p  { font-size: 13px; opacity: .65; margin-top: 3px; }
-  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
-
-  /* ── tabs ── */
-  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
-  .tab { padding: 7px 18px; border: 1px solid #ccc; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; color: #555; font-family: inherit; transition: background .15s; }
-  .tab:hover { background: #ededea; }
-  .tab.active { background: #26215C; color: #fff; border-color: #26215C; font-weight: 500; }
-  .section { display: none; }
-  .section.show { display: block; }
-
-  /* ── stat row ── */
-  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
-  .stat { background: #fff; border-radius: 10px; padding: 14px 16px; border: 1px solid #e4e3df; }
-  .stat-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
-  .stat-val { font-size: 26px; font-weight: 500; color: #26215C; }
-
-  /* ── filter bar ── */
-  .filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-  .filter-bar label { font-size: 13px; color: #666; }
-  select { font-family: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc; background: #fff; color: #1a1a18; cursor: pointer; }
-  .search-box { font-family: inherit; font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #ccc; background: #fff; color: #1a1a18; width: 180px; }
-
-  /* ── player cards ── */
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-  .card { background: #fff; border-radius: 12px; border: 1px solid #e4e3df; padding: 16px; }
-  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
-  .av-v    { background: #EEEDFE; color: #3C3489; }
-  .av-b    { background: #E1F5EE; color: #085041; }
-  .av-both { background: #FAEEDA; color: #633806; }
-  .card-name { font-size: 14px; font-weight: 500; }
-  .card-meta { font-size: 12px; color: #888; margin-top: 1px; }
-  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 500; }
-  .badge-v    { background: #EEEDFE; color: #3C3489; }
-  .badge-b    { background: #E1F5EE; color: #085041; }
-  .badge-both { background: #FAEEDA; color: #633806; }
-
-  /* ── mat rows inside card ── */
-  .mat-list { display: flex; flex-direction: column; gap: 7px; }
-  .mat-row  { display: flex; align-items: center; gap: 8px; }
-  .mat-name { font-size: 12px; color: #555; width: 148px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bar-wrap  { flex: 1; background: #ededea; border-radius: 4px; height: 7px; overflow: hidden; }
-  .bar       { height: 7px; border-radius: 4px; }
-  .bar-v    { background: #7F77DD; }
-  .bar-b    { background: #1D9E75; }
-  .mat-amt  { font-size: 12px; font-weight: 500; min-width: 48px; text-align: right; color: #1a1a18; }
-  .mat-hrs  { font-size: 11px; color: #999; min-width: 36px; text-align: right; }
-
-  /* ── table ── */
-  .table-wrap { background: #fff; border-radius: 12px; border: 1px solid #e4e3df; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 10px 14px; font-weight: 500; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid #e4e3df; white-space: nowrap; }
-  td { padding: 10px 14px; border-bottom: 1px solid #f0efe9; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #faf9f6; }
-
-  /* ── legend ── */
-  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
-  .leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #666; }
-  .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-
-  /* ── notice ── */
-  .notice { background: #fff8ec; border: 1px solid #f5d98a; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #7a5c00; margin-bottom: 16px; }
-
-  @media (max-width: 480px) {
-    .cards-grid { grid-template-columns: 1fr; }
-    .mat-name { width: 120px; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;background:#f5f4f0;color:#1a1a18;min-height:100vh;}
+header{background:#26215C;color:#fff;padding:20px 24px 16px;}
+header h1{font-size:22px;font-weight:500;letter-spacing:-.3px;}
+header p{font-size:13px;opacity:.65;margin-top:3px;}
+.container{max-width:980px;margin:0 auto;padding:24px 16px 60px;}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.tab{padding:7px 18px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:#555;font-family:inherit;transition:background .15s;}
+.tab:hover{background:#ededea;}
+.tab.active{background:#26215C;color:#fff;border-color:#26215C;font-weight:500;}
+.section{display:none;}
+.section.show{display:block;}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
+.stat{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e4e3df;}
+.stat-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.stat-val{font-size:26px;font-weight:500;color:#26215C;}
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-bar label{font-size:13px;color:#666;}
+select{font-family:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;cursor:pointer;}
+.search-box{font-family:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;width:180px;}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.card{background:#fff;border-radius:12px;border:1px solid #e4e3df;padding:16px;}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+.av-v{background:#EEEDFE;color:#3C3489;}
+.av-b{background:#E1F5EE;color:#085041;}
+.av-both{background:#FAEEDA;color:#633806;}
+.card-name{font-size:14px;font-weight:500;}
+.card-meta{font-size:12px;color:#888;margin-top:1px;}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;font-weight:500;}
+.badge-v{background:#EEEDFE;color:#3C3489;}
+.badge-b{background:#E1F5EE;color:#085041;}
+.badge-both{background:#FAEEDA;color:#633806;}
+.mat-list{display:flex;flex-direction:column;gap:7px;}
+.mat-row{display:flex;align-items:center;gap:8px;}
+.mat-name{font-size:12px;color:#555;width:148px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-wrap{flex:1;background:#ededea;border-radius:4px;height:7px;overflow:hidden;}
+.bar{height:7px;border-radius:4px;}
+.bar-v{background:#7F77DD;}
+.bar-b{background:#1D9E75;}
+.mat-amt{font-size:12px;font-weight:500;min-width:48px;text-align:right;color:#1a1a18;}
+.mat-hrs{font-size:11px;color:#999;min-width:36px;text-align:right;}
+.table-wrap{background:#fff;border-radius:12px;border:1px solid #e4e3df;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;padding:10px 14px;font-weight:500;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e4e3df;white-space:nowrap;}
+td{padding:10px 14px;border-bottom:1px solid #f0efe9;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#faf9f6;}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:16px;}
+.leg{display:flex;align-items:center;gap:6px;font-size:12px;color:#666;}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.notice{background:#fff8ec;border:1px solid #f5d98a;border-radius:8px;padding:10px 14px;font-size:13px;color:#7a5c00;margin-bottom:16px;}
+.pw-overlay{background:#f5f4f0;border-radius:12px;padding:40px 24px;text-align:center;border:1px solid #e4e3df;}
+.pw-overlay h3{font-size:16px;font-weight:500;margin-bottom:8px;color:#26215C;}
+.pw-overlay p{font-size:13px;color:#888;margin-bottom:18px;}
+.pw-row{display:flex;gap:8px;justify-content:center;align-items:center;}
+.pw-input{font-family:inherit;font-size:14px;padding:8px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;color:#1a1a18;width:200px;}
+.btn-primary{padding:8px 20px;background:#26215C;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;}
+.btn-primary:hover{background:#3C3489;}
+.err-msg{font-size:12px;color:#c0392b;margin-top:8px;min-height:16px;}
+textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radius:8px;border:1px solid #ccc;resize:vertical;color:#1a1a18;background:#fff;}
+@media(max-width:480px){.cards-grid{grid-template-columns:1fr;}.mat-name{width:120px;}}
 </style>
 </head>
 <body>
@@ -91,7 +77,6 @@
 </header>
 
 <div class="container">
-
   <div class="tabs">
     <button class="tab active" onclick="switchTab('byPlayer',this)">By player</button>
     <button class="tab" onclick="switchTab('byMaterial',this)">By material</button>
@@ -99,26 +84,24 @@
     <button class="tab" onclick="switchTab('editData',this)">Edit roster</button>
   </div>
 
-  <!-- BY PLAYER -->
   <div id="byPlayer" class="section show">
     <div class="filter-bar">
       <label>Filter:</label>
       <select id="roleFilter" onchange="renderCards()">
         <option value="all">All players</option>
-        <option value="v">Viewfinders</option>
-        <option value="b">Booby traps</option>
-        <option value="both">Cross-assigned</option>
+        <option value="v">Viewfinders only</option>
+        <option value="b">Booby traps only</option>
+        <option value="both">Mixed assignment</option>
       </select>
       <input class="search-box" id="searchBox" placeholder="Search player..." oninput="renderCards()">
     </div>
     <div class="legend">
-      <div class="leg"><div class="leg-dot" style="background:#7F77DD"></div>Viewfinders material</div>
-      <div class="leg"><div class="leg-dot" style="background:#1D9E75"></div>Booby traps material</div>
+      <div class="leg"><div class="leg-dot" style="background:#7F77DD"></div>Viewfinder material</div>
+      <div class="leg"><div class="leg-dot" style="background:#1D9E75"></div>Booby trap material</div>
     </div>
     <div class="cards-grid" id="cardsGrid"></div>
   </div>
 
-  <!-- BY MATERIAL -->
   <div id="byMaterial" class="section">
     <div class="table-wrap">
       <table>
@@ -128,54 +111,66 @@
     </div>
   </div>
 
-  <!-- SUMMARY -->
   <div id="summary" class="section">
     <div class="stat-row" id="statRow"></div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Player</th><th>Role</th><th>Materials</th><th>Total hours</th></tr></thead>
+        <thead><tr><th>Player</th><th>Assignment</th><th>Materials</th><th>Total hours</th></tr></thead>
         <tbody id="summaryBody"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- EDIT ROSTER -->
   <div id="editData" class="section">
-    <div class="notice">Edit the player lists below, then click <strong>Recalculate</strong>. One name per line.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-      <div>
-        <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Viewfinder players</label>
-        <textarea id="vEdit" rows="20" style="width:100%;font-family:inherit;font-size:13px;padding:10px;border-radius:8px;border:1px solid #ccc;resize:vertical;"></textarea>
+    <div id="pwWall" class="pw-overlay">
+      <h3>Roster editing is locked</h3>
+      <p>Enter the password to make changes.</p>
+      <div class="pw-row">
+        <input class="pw-input" id="pwInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()">
+        <button class="btn-primary" onclick="checkPw()">Unlock</button>
       </div>
-      <div>
-        <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Booby trap players</label>
-        <textarea id="bEdit" rows="20" style="width:100%;font-family:inherit;font-size:13px;padding:10px;border-radius:8px;border:1px solid #ccc;resize:vertical;"></textarea>
+      <div class="err-msg" id="pwErr"></div>
+    </div>
+    <div id="editForm" style="display:none;">
+      <div class="notice">Edit the player lists below, then click <strong>Recalculate</strong>. One name per line.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Viewfinder players</label>
+          <textarea id="vEdit" rows="20"></textarea>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Booby trap players</label>
+          <textarea id="bEdit" rows="20"></textarea>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn-primary" onclick="applyEdit()">Recalculate</button>
+        <button onclick="lockEdit()" style="padding:8px 20px;background:transparent;color:#666;border:1px solid #ccc;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;">Lock</button>
       </div>
     </div>
-    <button onclick="applyEdit()" style="padding:9px 24px;background:#26215C;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">Recalculate</button>
   </div>
-
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-//  ROSTER DATA — edit player names here to update assignments
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  ROSTER — edit here or via the password-protected
+//  "Edit roster" tab on the live page
+// ═══════════════════════════════════════════════════
 var V_PLAYERS = [
   "TheRealTox","Warmonki","sundens","Xycrig","Indominus D",
   "Breathyou","Darkshotz","Oddersfield","Contactu",
-  "Gradig","Carlut","Spider","nobodycares","Setesuyara","Chief Dwight","Wild Wolf"
+  "Gradig","Carlut","Spider","nobodycares","Setesuyara",
+  "Chief Dwight","Wild Wolf"
 ];
-
 var B_PLAYERS = [
   "Da Lauser","Angelina",".Dante","Helsan","Xycrig",
   "TrimPeachu","Dartzz","tophi","Wrigalz",
   "mihaiash","Viriatus","Snelmarijn1"
 ];
 
-// ═══════════════════════════════════════════════════════════════
-//  MATERIAL DATA — edit totals / rates if your recipe changes
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  MATERIALS — edit totals/rates if recipes change
+// ═══════════════════════════════════════════════════
 var V_MATS = [
   {name:"Wood",                 total:500,  rph:42},
   {name:"Granite",              total:200,  rph:25},
@@ -189,7 +184,6 @@ var V_MATS = [
   {name:"Lead",                 total:100,  rph:30},
   {name:"White gloves",         total:100,  rph:6 }
 ];
-
 var B_MATS = [
   {name:"Granite",              total:100,  rph:25},
   {name:"Dynamite",             total:1000, rph:14},
@@ -203,82 +197,143 @@ var B_MATS = [
   {name:"Pinkerton emblems",    total:200,  rph:5 },
   {name:"Blasting machines",    total:500,  rph:6 }
 ];
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 
-function distribute(players, mats) {
+var PW = "letmein123";
+
+// Build one combined pool of all unique players
+function allPlayers() {
+  var seen = {};
+  var pool = [];
+  V_PLAYERS.concat(B_PLAYERS).forEach(function(p) {
+    if (!seen[p]) { seen[p] = true; pool.push(p); }
+  });
+  return pool;
+}
+
+// Distribute a list of materials across a pool of players
+// so each player ends up with roughly equal total hours.
+// Returns { assignments: {player: [{mat,amount,hours,craft}]}, playerHours, matAssignments }
+function distribute(players, mats, craftTag) {
   var n = players.length;
-  if (n === 0) return {assignments:{}, playerHours:{}, matAssignments:[]};
-  var totalHours = mats.reduce(function(s,m){ return s + m.total/m.rph; }, 0);
+  if (!n) return {assignments:{},playerHours:{},matAssignments:[]};
+  var totalHours = mats.reduce(function(s,m){return s+m.total/m.rph;},0);
   var target = totalHours / n;
   var playerHours = {};
-  players.forEach(function(p){ playerHours[p] = 0; });
   var assignments = {};
-  players.forEach(function(p){ assignments[p] = []; });
+  players.forEach(function(p){playerHours[p]=0;assignments[p]=[];});
   var matAssignments = [];
 
   mats.forEach(function(mat) {
     var remaining = mat.total;
     var assigns = [];
-    var iters = 0;
-    while (remaining > 0 && iters < n * 4) {
-      iters++;
-      var sorted = players.slice().sort(function(a,b){ return playerHours[a]-playerHours[b]; });
+    var safety = 0;
+    while (remaining > 0 && safety++ < n*6) {
+      var sorted = players.slice().sort(function(a,b){return playerHours[a]-playerHours[b];});
       var p = sorted[0];
       var slack = Math.max(0, target - playerHours[p]);
-      var giveHours = slack > 0 ? slack : (mat.total / mat.rph) / n;
+      var giveHours = slack > 0.001 ? slack : mat.total / mat.rph / n;
       var giveAmt = Math.min(remaining, Math.max(1, Math.round(giveHours * mat.rph)));
       if (giveAmt > remaining) giveAmt = remaining;
       var hrs = giveAmt / mat.rph;
-      var existing = assigns.find(function(a){ return a.player===p; });
-      if (existing) {
-        existing.amount += giveAmt;
-        existing.hours  += hrs;
-      } else {
-        assigns.push({player:p, amount:giveAmt, hours:hrs});
-      }
+      var ex = assigns.find(function(a){return a.player===p;});
+      if (ex) { ex.amount+=giveAmt; ex.hours+=hrs; }
+      else     { assigns.push({player:p,amount:giveAmt,hours:hrs}); }
       playerHours[p] += hrs;
       remaining -= giveAmt;
     }
     if (remaining > 0) {
-      if (assigns.length > 0) {
-        assigns[assigns.length-1].amount += remaining;
-        assigns[assigns.length-1].hours  += remaining / mat.rph;
-        playerHours[assigns[assigns.length-1].player] += remaining / mat.rph;
-      } else {
-        assigns.push({player:players[0], amount:remaining, hours:remaining/mat.rph});
-        playerHours[players[0]] += remaining/mat.rph;
-      }
+      var last = assigns[assigns.length-1] || {player:players[0],amount:0,hours:0};
+      if (!assigns.length) assigns.push(last);
+      last.amount += remaining;
+      last.hours  += remaining / mat.rph;
+      playerHours[last.player] += remaining / mat.rph;
     }
     assigns.forEach(function(a){
-      assignments[a.player].push({mat:mat.name, amount:a.amount, hours:a.hours, craft:'v'});
+      assignments[a.player].push({mat:mat.name,amount:a.amount,hours:a.hours,craft:craftTag});
     });
-    matAssignments.push({mat:mat.name, total:mat.total, rph:mat.rph, assigns:assigns});
+    matAssignments.push({mat:mat.name,total:mat.total,rph:mat.rph,craft:craftTag,assigns:assigns});
   });
-  return {assignments:assignments, playerHours:playerHours, matAssignments:matAssignments};
+  return {assignments:assignments,playerHours:playerHours,matAssignments:matAssignments};
 }
 
-var vRes, bRes;
+// Pool all players, distribute all materials together with equal target
+function poolDistribute() {
+  var players = allPlayers();
+  var n = players.length;
+  var allMats = V_MATS.map(function(m){return Object.assign({},m,{craft:'v'});})
+                .concat(B_MATS.map(function(m){return Object.assign({},m,{craft:'b'});}));
+  var totalHours = allMats.reduce(function(s,m){return s+m.total/m.rph;},0);
+  var target = totalHours / n;
+
+  var playerHours = {};
+  var assignments = {};
+  players.forEach(function(p){playerHours[p]=0;assignments[p]=[];});
+  var matAssignments = [];
+
+  allMats.forEach(function(mat) {
+    var remaining = mat.total;
+    var assigns = [];
+    var safety = 0;
+    while (remaining > 0 && safety++ < n*6) {
+      var sorted = players.slice().sort(function(a,b){return playerHours[a]-playerHours[b];});
+      var p = sorted[0];
+      var slack = Math.max(0, target - playerHours[p]);
+      var giveHours = slack > 0.001 ? slack : mat.total / mat.rph / n;
+      var giveAmt = Math.min(remaining, Math.max(1, Math.round(giveHours * mat.rph)));
+      if (giveAmt > remaining) giveAmt = remaining;
+      var hrs = giveAmt / mat.rph;
+      var ex = assigns.find(function(a){return a.player===p;});
+      if (ex) { ex.amount+=giveAmt; ex.hours+=hrs; }
+      else     { assigns.push({player:p,amount:giveAmt,hours:hrs}); }
+      playerHours[p] += hrs;
+      remaining -= giveAmt;
+    }
+    if (remaining > 0) {
+      var last = assigns[assigns.length-1] || {player:players[0],amount:0,hours:0};
+      if (!assigns.length) assigns.push(last);
+      last.amount += remaining;
+      last.hours  += remaining / mat.rph;
+      playerHours[last.player] += remaining / mat.rph;
+    }
+    assigns.forEach(function(a){
+      assignments[a.player].push({mat:mat.name,amount:a.amount,hours:a.hours,craft:mat.craft});
+    });
+    matAssignments.push({mat:mat.name,total:mat.total,rph:mat.rph,craft:mat.craft,assigns:assigns});
+  });
+  return {assignments:assignments,playerHours:playerHours,matAssignments:matAssignments,target:target};
+}
+
+var RES;
 
 function recalc() {
-  vRes = distribute(V_PLAYERS, V_MATS);
-  bRes = distribute(B_PLAYERS, B_MATS);
-  // tag booby trap assignments
-  B_PLAYERS.forEach(function(p){
-    (bRes.assignments[p]||[]).forEach(function(a){ a.craft='b'; });
-  });
+  RES = poolDistribute();
   renderCards();
   renderMaterials();
   renderSummary();
-  // populate edit textareas
   document.getElementById('vEdit').value = V_PLAYERS.join('\n');
   document.getElementById('bEdit').value = B_PLAYERS.join('\n');
 }
 
+function playerType(p) {
+  var inV = V_PLAYERS.indexOf(p) !== -1;
+  var inB = B_PLAYERS.indexOf(p) !== -1;
+  if (inV && inB) return 'both';
+  if (inB) return 'b';
+  return 'v';
+}
+
+function assignmentType(assigns) {
+  var hasV = assigns.some(function(a){return a.craft==='v';});
+  var hasB = assigns.some(function(a){return a.craft==='b';});
+  if (hasV && hasB) return 'both';
+  if (hasB) return 'b';
+  return 'v';
+}
+
 function initials(name) {
   var parts = name.trim().split(/[\s.]+/);
-  var a = parts[0][0] || '';
-  var b = parts[1] ? parts[1][0] : (parts[0][1] || '');
-  return (a+b).toUpperCase();
+  return ((parts[0][0]||'')+(parts[1]?parts[1][0]:parts[0][1]||'')).toUpperCase();
 }
 
 function renderCards() {
@@ -286,35 +341,23 @@ function renderCards() {
   var search = document.getElementById('searchBox').value.toLowerCase();
   var grid = document.getElementById('cardsGrid');
   grid.innerHTML = '';
+  var players = allPlayers();
 
-  var all = [];
-  V_PLAYERS.forEach(function(p){
-    var isBoth = B_PLAYERS.indexOf(p) !== -1;
-    var type = isBoth ? 'both' : 'v';
-    if (filter !== 'all' && filter !== type) return;
+  players.forEach(function(p) {
+    var assigns = RES.assignments[p] || [];
+    var aType = assignmentType(assigns);
+    if (filter !== 'all' && filter !== aType) return;
     if (search && p.toLowerCase().indexOf(search) === -1) return;
-    var vA = (vRes.assignments[p]||[]).map(function(a){ return Object.assign({},a,{craft:'v'}); });
-    var bA = isBoth ? (bRes.assignments[p]||[]).map(function(a){ return Object.assign({},a,{craft:'b'}); }) : [];
-    var hrs = (vRes.playerHours[p]||0) + (isBoth ? bRes.playerHours[p]||0 : 0);
-    all.push({p:p, type:type, assigns:vA.concat(bA), hrs:hrs});
-  });
-  B_PLAYERS.forEach(function(p){
-    if (V_PLAYERS.indexOf(p) !== -1) return;
-    if (filter !== 'all' && filter !== 'b') return;
-    if (search && p.toLowerCase().indexOf(search) === -1) return;
-    var bA = (bRes.assignments[p]||[]).map(function(a){ return Object.assign({},a,{craft:'b'}); });
-    all.push({p:p, type:'b', assigns:bA, hrs:bRes.playerHours[p]||0});
-  });
 
-  all.forEach(function(pl) {
-    var avCls   = pl.type==='v' ? 'av-v' : pl.type==='b' ? 'av-b' : 'av-both';
-    var badgeCls= pl.type==='v' ? 'badge-v' : pl.type==='b' ? 'badge-b' : 'badge-both';
-    var roleLabel= pl.type==='v' ? 'Viewfinders' : pl.type==='b' ? 'Booby traps' : 'Both crafts';
-    var maxAmt  = Math.max.apply(null, pl.assigns.map(function(a){ return a.amount; }).concat([1]));
+    var hrs = RES.playerHours[p] || 0;
+    var avCls    = aType==='v'?'av-v':aType==='b'?'av-b':'av-both';
+    var badgeCls = aType==='v'?'badge-v':aType==='b'?'badge-b':'badge-both';
+    var roleLabel= aType==='v'?'Viewfinders':aType==='b'?'Booby traps':'Mixed';
+    var maxAmt   = Math.max.apply(null, assigns.map(function(a){return a.amount;}).concat([1]));
 
-    var matRows = pl.assigns.map(function(a){
-      var pct = Math.round(a.amount / maxAmt * 100);
-      var barCls = a.craft==='v' ? 'bar-v' : 'bar-b';
+    var matRows = assigns.map(function(a) {
+      var pct = Math.round(a.amount/maxAmt*100);
+      var barCls = a.craft==='v'?'bar-v':'bar-b';
       return '<div class="mat-row">'
         +'<span class="mat-name" title="'+a.mat+'">'+a.mat+'</span>'
         +'<div class="bar-wrap"><div class="bar '+barCls+'" style="width:'+pct+'%"></div></div>'
@@ -326,30 +369,30 @@ function renderCards() {
     var card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = '<div class="card-header">'
-      +'<div class="avatar '+avCls+'">'+initials(pl.p)+'</div>'
-      +'<div><div class="card-name">'+pl.p+'</div>'
-      +'<div class="card-meta"><span class="badge '+badgeCls+'">'+roleLabel+'</span> &nbsp;'+pl.hrs.toFixed(1)+' hrs</div>'
+      +'<div class="avatar '+avCls+'">'+initials(p)+'</div>'
+      +'<div><div class="card-name">'+p+'</div>'
+      +'<div class="card-meta"><span class="badge '+badgeCls+'">'+roleLabel+'</span>&nbsp; '+hrs.toFixed(1)+' hrs</div>'
       +'</div></div>'
       +'<div class="mat-list">'+matRows+'</div>';
     grid.appendChild(card);
   });
 
-  if (grid.children.length === 0) {
-    grid.innerHTML = '<p style="color:#888;font-size:13px;padding:8px 0;">No players match the current filter.</p>';
+  if (!grid.children.length) {
+    grid.innerHTML = '<p style="color:#888;font-size:13px;padding:8px 0;">No players match.</p>';
   }
 }
 
 function renderMaterials() {
   var body = document.getElementById('matBody');
   body.innerHTML = '';
-  var rows = vRes.matAssignments.map(function(m){ return Object.assign({},m,{craft:'Viewfinders',cls:'badge-v'}); })
-    .concat(bRes.matAssignments.map(function(m){ return Object.assign({},m,{craft:'Booby traps',cls:'badge-b'}); }));
-  rows.forEach(function(m){
-    var playerList = m.assigns.map(function(a){ return a.player; }).join(', ');
-    var eachAmt = m.assigns.length > 0 ? Math.round(m.total / m.assigns.length) : m.total;
+  RES.matAssignments.forEach(function(m) {
+    var playerList = m.assigns.map(function(a){return a.player;}).join(', ');
+    var eachAmt = m.assigns.length ? Math.round(m.total/m.assigns.length) : m.total;
+    var bc = m.craft==='v'?'badge-v':'badge-b';
+    var label = m.craft==='v'?'Viewfinders':'Booby traps';
     var tr = document.createElement('tr');
     tr.innerHTML = '<td style="font-weight:500">'+m.mat+'</td>'
-      +'<td><span class="badge '+m.cls+'">'+m.craft+'</span></td>'
+      +'<td><span class="badge '+bc+'">'+label+'</span></td>'
       +'<td>'+m.total.toLocaleString()+'</td>'
       +'<td>'+m.rph+'/hr</td>'
       +'<td style="color:#666;font-size:12px">'+playerList+'</td>'
@@ -360,61 +403,79 @@ function renderMaterials() {
 }
 
 function renderSummary() {
-  var allVHrs = V_PLAYERS.map(function(p){ return vRes.playerHours[p]||0; });
-  var allBHrs = B_PLAYERS.map(function(p){ return bRes.playerHours[p]||0; });
-  var totalV = allVHrs.reduce(function(s,v){ return s+v; },0);
-  var totalB = allBHrs.reduce(function(s,v){ return s+v; },0);
-  var uniqueP = V_PLAYERS.concat(B_PLAYERS.filter(function(p){ return V_PLAYERS.indexOf(p)===-1; })).length;
+  var players = allPlayers();
+  var totalHrs = players.reduce(function(s,p){return s+(RES.playerHours[p]||0);},0);
+  var target = RES.target;
+  var hrs = players.map(function(p){return RES.playerHours[p]||0;});
+  var minH = Math.min.apply(null,hrs), maxH = Math.max.apply(null,hrs);
 
   document.getElementById('statRow').innerHTML =
-    stat('Total players', uniqueP)
-    + stat('Viewfinder hours', Math.round(totalV))
-    + stat('Booby trap hours', Math.round(totalB))
-    + stat('Avg hrs / player', ((totalV+totalB)/uniqueP).toFixed(1));
+    stat('Total players', players.length)
+    +stat('Total hours', Math.round(totalHrs))
+    +stat('Target / player', target.toFixed(1)+'h')
+    +stat('Max spread', (maxH-minH).toFixed(1)+'h');
 
   var body = document.getElementById('summaryBody');
   body.innerHTML = '';
-  var rows = [];
-  V_PLAYERS.forEach(function(p){
-    var isBoth = B_PLAYERS.indexOf(p) !== -1;
-    var vH = vRes.playerHours[p]||0;
-    var bH = isBoth ? bRes.playerHours[p]||0 : 0;
-    var mats = (vRes.assignments[p]||[]).map(function(a){ return a.mat; });
-    if (isBoth) { (bRes.assignments[p]||[]).forEach(function(a){ mats.push(a.mat+' (B)'); }); }
-    rows.push({p:p, role:isBoth?'Both':'Viewfinders', hrs:vH+bH, mats:mats, type:isBoth?'both':'v'});
+  var rows = players.map(function(p){
+    var assigns = RES.assignments[p]||[];
+    var aType = assignmentType(assigns);
+    var mats = assigns.map(function(a){
+      return '<span class="badge '+(a.craft==='v'?'badge-v':'badge-b')+'" style="margin:1px 2px;font-size:10px;">'+a.mat+'</span>';
+    }).join(' ');
+    return {p:p,aType:aType,hrs:RES.playerHours[p]||0,mats:mats};
   });
-  B_PLAYERS.filter(function(p){ return V_PLAYERS.indexOf(p)===-1; }).forEach(function(p){
-    var mats = (bRes.assignments[p]||[]).map(function(a){ return a.mat; });
-    rows.push({p:p, role:'Booby traps', hrs:bRes.playerHours[p]||0, mats:mats, type:'b'});
-  });
-  rows.sort(function(a,b){ return b.hrs-a.hrs; });
+  rows.sort(function(a,b){return b.hrs-a.hrs;});
   rows.forEach(function(r){
-    var bc = r.type==='v'?'badge-v':r.type==='b'?'badge-b':'badge-both';
+    var bc = r.aType==='v'?'badge-v':r.aType==='b'?'badge-b':'badge-both';
+    var label = r.aType==='v'?'Viewfinders':r.aType==='b'?'Booby traps':'Mixed';
+    var diff = r.hrs - target;
+    var diffStr = (diff>=0?'+':'')+diff.toFixed(1)+'h';
+    var diffColor = Math.abs(diff)<1?'#3B6D11':Math.abs(diff)<3?'#7a5c00':'#c0392b';
     var tr = document.createElement('tr');
     tr.innerHTML = '<td style="font-weight:500">'+r.p+'</td>'
-      +'<td><span class="badge '+bc+'">'+r.role+'</span></td>'
-      +'<td style="color:#666;font-size:12px">'+r.mats.join(', ')+'</td>'
-      +'<td style="font-weight:500">'+r.hrs.toFixed(1)+'h</td>';
+      +'<td><span class="badge '+bc+'">'+label+'</span></td>'
+      +'<td style="font-size:12px;line-height:1.8">'+r.mats+'</td>'
+      +'<td><span style="font-weight:500">'+r.hrs.toFixed(1)+'h</span> '
+      +'<span style="font-size:11px;color:'+diffColor+'">'+diffStr+'</span></td>';
     body.appendChild(tr);
   });
 }
 
-function stat(label, val) {
+function stat(label,val){
   return '<div class="stat"><div class="stat-label">'+label+'</div><div class="stat-val">'+val+'</div></div>';
 }
 
-function switchTab(id, btn) {
-  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('show'); });
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+function switchTab(id,btn){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('show');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById(id).classList.add('show');
   btn.classList.add('active');
 }
 
-function applyEdit() {
-  V_PLAYERS = document.getElementById('vEdit').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
-  B_PLAYERS = document.getElementById('bEdit').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+function checkPw(){
+  var val = document.getElementById('pwInput').value;
+  if (val === PW) {
+    document.getElementById('pwWall').style.display = 'none';
+    document.getElementById('editForm').style.display = 'block';
+    document.getElementById('pwErr').textContent = '';
+  } else {
+    document.getElementById('pwErr').textContent = 'Wrong password, try again.';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+function lockEdit(){
+  document.getElementById('pwWall').style.display = 'block';
+  document.getElementById('editForm').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+}
+
+function applyEdit(){
+  V_PLAYERS = document.getElementById('vEdit').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  B_PLAYERS = document.getElementById('bEdit').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
   recalc();
-  alert('Recalculated! Switch to another tab to see results.');
+  alert('Done! Check the other tabs to see the updated schedule.');
 }
 
 recalc();
