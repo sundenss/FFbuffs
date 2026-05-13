@@ -242,9 +242,27 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
 
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-database-compat.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-firebase.initializeApp({databaseURL:"https://the-west-schedule-default-rtdb.europe-west1.firebasedatabase.app/"});
-var db = firebase.database();
+firebase.initializeApp({
+  apiKey: "AIzaSyCd3BSSuVsinD139GyxCkz73CsAZWU0DwY",
+
+  authDomain: "the-west-schedule.firebaseapp.com",
+
+  databaseURL: "https://the-west-schedule-default-rtdb.europe-west1.firebasedatabase.app",
+
+  projectId: "the-west-schedule",
+
+  storageBucket: "the-west-schedule.firebasestorage.app",
+
+  messagingSenderId: "777905200661",
+
+  appId: "1:777905200661:web:db7bbbaec7ba1749a9f81c",
+
+  measurementId: "G-BKCXDX8LDS"
+
+});
+var db = firebase.firestore();
 
 // ═══════════════════════════════════════════════════
 //  MATERIALS
