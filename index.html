@@ -141,7 +141,6 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
     <button class="tab" onclick="switchTab('editData',this)">Edit roster</button>
   </div>
 
-  <!-- BY PLAYER -->
   <div id="byPlayer" class="section show">
     <div id="alertBanner" class="alert-banner">
       <h3 id="alertTitle"></h3>
@@ -169,7 +168,6 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
     <div id="cardsGrid" class="cards-grid"><div class="loading">Loading schedule...</div></div>
   </div>
 
-  <!-- BY MATERIAL -->
   <div id="byMaterial" class="section">
     <div class="table-wrap">
       <table>
@@ -179,7 +177,6 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
     </div>
   </div>
 
-  <!-- SUMMARY -->
   <div id="summary" class="section">
     <div class="stat-row" id="statRow"></div>
     <div class="table-wrap">
@@ -190,7 +187,6 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
     </div>
   </div>
 
-  <!-- HISTORY -->
   <div id="history" class="section">
     <div class="period-selector">
       <label style="font-size:13px;color:#666;">Period:</label>
@@ -199,7 +195,6 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
     <div id="historyContent"><div class="history-empty">Select a period above.</div></div>
   </div>
 
-  <!-- EDIT ROSTER -->
   <div id="editData" class="section">
     <div id="pwWall" class="pw-overlay">
       <h3>Roster editing is locked</h3>
@@ -211,8 +206,7 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
       <div class="err-msg" id="pwErr"></div>
     </div>
     <div id="editForm" style="display:none;">
-      <div class="notice">Changes save to Firebase when you click Save &amp; Recalculate.</div>
-
+      <div class="notice">Changes save to Firestore when you click Save &amp; Recalculate.</div>
       <div style="margin-bottom:20px;">
         <div class="section-label">Announcement banner</div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -221,16 +215,13 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
           <button class="btn" onclick="clearAnnouncement()">Clear</button>
         </div>
       </div>
-
       <div class="section-label">Viewfinder players</div>
       <div class="info-box">Name · Level · Gear % (0 if unknown) · HI = Higher Income premium · ADV = Adventurer class</div>
       <div id="vPlayerRows"></div>
       <button class="btn btn-sm" onclick="addPlayerRow('v')" style="margin-top:8px;">+ Add player</button>
-
       <div class="section-label" style="margin-top:20px;">Booby trap players</div>
       <div id="bPlayerRows"></div>
       <button class="btn btn-sm" onclick="addPlayerRow('b')" style="margin-top:8px;">+ Add player</button>
-
       <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="saveRoster()">Save &amp; Recalculate</button>
         <button class="btn" onclick="lockEdit()">Lock</button>
@@ -240,34 +231,14 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-database-compat.min.js"></script>
+<!-- Firestore — no persistent connections, no connection limit -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-firebase.initializeApp({
-  apiKey: "AIzaSyCd3BSSuVsinD139GyxCkz73CsAZWU0DwY",
-
-  authDomain: "the-west-schedule.firebaseapp.com",
-
-  databaseURL: "https://the-west-schedule-default-rtdb.europe-west1.firebasedatabase.app",
-
-  projectId: "the-west-schedule",
-
-  storageBucket: "the-west-schedule.firebasestorage.app",
-
-  messagingSenderId: "777905200661",
-
-  appId: "1:777905200661:web:db7bbbaec7ba1749a9f81c",
-
-  measurementId: "G-BKCXDX8LDS"
-
-});
+firebase.initializeApp({projectId:"the-west-schedule-default-rtdb"});
 var db = firebase.firestore();
 
-// ═══════════════════════════════════════════════════
-//  MATERIALS
-// ═══════════════════════════════════════════════════
-var V_MATS = [
+var V_MATS=[
   {name:"Wood",                 total:500,  rph:42, base:450, img:"img/wood.png"},
   {name:"Granite",              total:200,  rph:25, base:270, img:"img/granite.png"},
   {name:"Semi-precious stones", total:200,  rph:6,  base:72,  img:"img/semi-precious-stones.png"},
@@ -280,7 +251,7 @@ var V_MATS = [
   {name:"Lead",                 total:100,  rph:30, base:330, img:"img/lead.png"},
   {name:"White gloves",         total:100,  rph:6,  base:66,  img:"img/white-gloves.png"}
 ];
-var B_MATS = [
+var B_MATS=[
   {name:"Granite",              total:100,  rph:25, base:270, img:"img/granite.png"},
   {name:"Dynamite",             total:1000, rph:14, base:150, img:"img/dynamite.png"},
   {name:"Jugs",                 total:200,  rph:8,  base:96,  img:"img/jugs.png"},
@@ -294,62 +265,46 @@ var B_MATS = [
   {name:"Blasting machines",    total:500,  rph:6,  base:108, img:"img/blasting-machines.png"}
 ];
 
-var PW = "letmein123";
-
-// ── default roster ────────────────────────────────
-var DEFAULT_V = [
-  {name:"TheRealTox",  level:133, gear:225,  hi:false, adv:false},
-  {name:"sundens",     level:174, gear:316,  hi:true,  adv:false},
-  {name:"Xycrig",      level:174, gear:0,    hi:true,  adv:false},
-  {name:"Indominus D", level:174, gear:318,  hi:true,  adv:false},
-  {name:"Breathyou",   level:168, gear:352,  hi:true,  adv:false},
-  {name:"Darkshotz",   level:152, gear:0,    hi:true,  adv:false},
-  {name:"Oddersfield", level:193, gear:0,    hi:true,  adv:false},
-  {name:"Gradig",      level:130, gear:152,  hi:false, adv:false},
-  {name:"Carlut",      level:158, gear:225,  hi:false, adv:false},
-  {name:"Spider",      level:135, gear:0,    hi:false, adv:false},
-  {name:"Setesuyara",  level:140, gear:279,  hi:false, adv:false},
-  {name:"nobodycares", level:154, gear:285,  hi:false, adv:false}
+var PW="letmein123";
+var DEFAULT_V=[
+  {name:"TheRealTox",  level:133,gear:225, hi:false,adv:false},
+  {name:"sundens",     level:174,gear:316, hi:true, adv:false},
+  {name:"Xycrig",      level:174,gear:0,   hi:true, adv:false},
+  {name:"Indominus D", level:174,gear:318, hi:true, adv:false},
+  {name:"Breathyou",   level:168,gear:352, hi:true, adv:false},
+  {name:"Darkshotz",   level:152,gear:0,   hi:true, adv:false},
+  {name:"Oddersfield", level:193,gear:0,   hi:true, adv:false},
+  {name:"Gradig",      level:130,gear:152, hi:false,adv:false},
+  {name:"Carlut",      level:158,gear:225, hi:false,adv:false},
+  {name:"Spider",      level:135,gear:0,   hi:false,adv:false},
+  {name:"Setesuyara",  level:140,gear:279, hi:false,adv:false},
+  {name:"nobodycares", level:154,gear:285, hi:false,adv:false}
 ];
-var DEFAULT_B = [
-  {name:"Da Lauser",   level:162, gear:343,  hi:true,  adv:true},
-  {name:"Angelina",    level:165, gear:0,    hi:true,  adv:true},
-  {name:".Dante",      level:165, gear:327,  hi:true,  adv:true},
-  {name:"Helsan",      level:168, gear:0,    hi:true,  adv:false},
-  {name:"TrimPeachu",  level:147, gear:258,  hi:false, adv:false},
-  {name:"Dartzz",      level:145, gear:0,    hi:false, adv:false},
-  {name:"tophi",       level:144, gear:309,  hi:false, adv:true},
-  {name:"Wrigalz",     level:168, gear:323,  hi:false, adv:false},
-  {name:"SpitFire",    level:146, gear:0,    hi:false, adv:false},
-  {name:"Yakitu",      level:164, gear:0,    hi:true,  adv:false},
-  {name:"mihaiash",    level:150, gear:0,    hi:false, adv:false},
-  {name:"Xycrig",      level:174, gear:0,    hi:true,  adv:false}
+var DEFAULT_B=[
+  {name:"Da Lauser",  level:162,gear:343, hi:true, adv:true},
+  {name:"Angelina",   level:165,gear:0,   hi:true, adv:true},
+  {name:".Dante",     level:165,gear:327, hi:true, adv:true},
+  {name:"Helsan",     level:168,gear:0,   hi:true, adv:false},
+  {name:"TrimPeachu", level:147,gear:258, hi:false,adv:false},
+  {name:"Dartzz",     level:145,gear:0,   hi:false,adv:false},
+  {name:"tophi",      level:144,gear:309, hi:false,adv:true},
+  {name:"Wrigalz",    level:168,gear:323, hi:false,adv:false},
+  {name:"SpitFire",   level:146,gear:0,   hi:false,adv:false},
+  {name:"Yakitu",     level:164,gear:0,   hi:true, adv:false},
+  {name:"mihaiash",   level:150,gear:0,   hi:false,adv:false},
+  {name:"Xycrig",     level:174,gear:0,   hi:true, adv:false}
 ];
 
-var V_PLAYERS=[], B_PLAYERS=[], checks={}, RES;
+var V_PLAYERS=[],B_PLAYERS=[],checks={},RES;
 
-// ── GP grade ──────────────────────────────────────
-function gpMult(level){
-  if(level>=170)return 1.5;
-  if(level>=145)return 1.4;
-  if(level>=120)return 1.3;
-  if(level>=95) return 1.2;
-  return 1.1;
-}
-function gpGrade(level){
-  return gpMult(level)===1.5?5:gpMult(level)===1.4?4:gpMult(level)===1.3?3:gpMult(level)===1.2?2:1;
+function gpMult(l){return l>=170?1.5:l>=145?1.4:l>=120?1.3:l>=95?1.2:1.1;}
+function gpGrade(l){var m=gpMult(l);return m===1.5?5:m===1.4?4:m===1.3?3:m===1.2?2:1;}
+function calcRate(base,p){
+  if(!p.gear)return null;
+  var r=base*gpMult(p.level)*(1+p.gear/100);
+  if(p.hi)r*=1.5;if(p.adv)r*=1.2;return Math.round(r);
 }
 
-// ── drop rate calc ────────────────────────────────
-function calcRate(base,player){
-  if(!player.gear)return null;
-  var r=base*gpMult(player.level)*(1+player.gear/100);
-  if(player.hi) r*=1.5;
-  if(player.adv)r*=1.2;
-  return Math.round(r);
-}
-
-// ── period helpers ────────────────────────────────
 function getPeriodKey(){
   var n=new Date();
   return n.getFullYear()+'-'+(n.getMonth()+1)+'-'+(n.getDate()<=15?1:2);
@@ -357,7 +312,7 @@ function getPeriodKey(){
 function periodLabel(key){
   var p=key.split('-');
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return months[parseInt(p[1])-1]+' '+p[0]+' ('+(p[2]==='1'?'1–15':'16–end')+')';
+  return months[parseInt(p[1])-1]+' '+p[0]+' ('+(p[2]==='1'?'1-15':'16-end')+')';
 }
 function getNextDeadline(){
   var n=new Date(),y=n.getFullYear(),m=n.getMonth(),d=n.getDate();
@@ -378,99 +333,93 @@ function updateDeadlineDisplay(){
   }
 }
 
-// ── firebase: fetch once, no persistent connections ─
 var periodKey=getPeriodKey();
+function safeKey(s){return s.replace(/[^a-zA-Z0-9]/g,function(c){return '_'+c.charCodeAt(0)+'_';});}
 
 function fetchChecks(cb){
-  db.ref('checks/'+periodKey).once('value',function(snap){
-    checks=snap.val()||{};
-    if(cb)cb();
-  });
+  db.collection('checks').doc(periodKey).get()
+    .then(function(doc){checks=doc.exists?doc.data():{};if(cb)cb();})
+    .catch(function(e){console.error('fetchChecks',e);checks={};if(cb)cb();});
 }
 function fetchAnnouncement(){
-  db.ref('announcement').once('value',function(snap){
-    var txt=snap.val()||'';
-    var bar=document.getElementById('announcementBar');
-    if(txt){
-      document.getElementById('announcementText').textContent=txt;
-      bar.style.display='flex';
-      var inp=document.getElementById('announcementInput');
-      if(inp)inp.value=txt;
-    } else {
-      bar.style.display='none';
-    }
-  });
+  db.collection('config').doc('announcement').get()
+    .then(function(doc){
+      var txt=doc.exists?(doc.data().text||''):'';
+      var bar=document.getElementById('announcementBar');
+      if(txt){
+        document.getElementById('announcementText').textContent=txt;
+        bar.style.display='flex';
+        var inp=document.getElementById('announcementInput');
+        if(inp)inp.value=txt;
+      } else {
+        bar.style.display='none';
+      }
+    }).catch(function(e){console.error('fetchAnnouncement',e);});
 }
 function fetchRoster(cb){
-  db.ref('roster').once('value',function(snap){
-    var data=snap.val();
-    if(data&&data.v&&data.b){
-      V_PLAYERS=data.v;
-      B_PLAYERS=data.b;
-    } else {
+  db.collection('config').doc('roster').get()
+    .then(function(doc){
+      var data=doc.exists?doc.data():null;
+      if(data&&data.v&&data.b){V_PLAYERS=data.v;B_PLAYERS=data.b;}
+      else{
+        V_PLAYERS=DEFAULT_V.map(function(p){return Object.assign({},p);});
+        B_PLAYERS=DEFAULT_B.map(function(p){return Object.assign({},p);});
+      }
+      if(cb)cb();
+    }).catch(function(e){
+      console.error('fetchRoster',e);
       V_PLAYERS=DEFAULT_V.map(function(p){return Object.assign({},p);});
       B_PLAYERS=DEFAULT_B.map(function(p){return Object.assign({},p);});
-    }
-    if(cb)cb();
-  });
+      if(cb)cb();
+    });
 }
 
 function refreshChecks(){
   var btn=document.getElementById('refreshBtn');
-  var lu=document.getElementById('lastUpdated');
-  btn.innerHTML='<span class="spin">&#8635;</span> Refreshing...';
-  btn.disabled=true;
+  btn.innerHTML='<span class="spin">&#8635;</span> Refreshing...';btn.disabled=true;
   fetchChecks(function(){
-    renderCards();
-    renderSummary();
+    renderCards();renderSummary();
     var now=new Date();
-    lu.textContent='Updated '+now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
-    btn.innerHTML='&#8635; Refresh checkmarks';
-    btn.disabled=false;
+    document.getElementById('lastUpdated').textContent='Updated '+now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+    btn.innerHTML='&#8635; Refresh checkmarks';btn.disabled=false;
   });
 }
 
 function toggleCheck(player,mat){
-  var key=safeKey(player)+'|'+safeKey(mat);
-  var ref=db.ref('checks/'+periodKey+'/'+key);
+  var key=safeKey(player)+'__'+safeKey(mat);
+  var ref=db.collection('checks').doc(periodKey);
+  var upd={};
   if(checks[key]){
-    checks[key]=null;
-    ref.remove();
+    delete checks[key];
+    upd[key]=firebase.firestore.FieldValue.delete();
+    ref.update(upd).catch(function(){});
   } else {
     checks[key]=true;
-    ref.set(true);
+    upd[key]=true;
+    ref.set(upd,{merge:true}).catch(function(){});
   }
-  renderCards();
-  renderSummary();
+  renderCards();renderSummary();
 }
-
-function isChecked(player,mat){return!!checks[safeKey(player)+'|'+safeKey(mat)];}
-function safeKey(s){return s.replace(/[.#$\/\[\]]/g,'_');}
+function isChecked(player,mat){return!!checks[safeKey(player)+'__'+safeKey(mat)];}
 
 function resetChecks(){
   if(!confirm('Reset ALL checkmarks for the current period?'))return;
-  db.ref('checks/'+periodKey).remove(function(){
-    checks={};
-    renderCards();
-    renderSummary();
+  db.collection('checks').doc(periodKey).delete().then(function(){
+    checks={};renderCards();renderSummary();
   });
 }
-
 function saveAnnouncement(){
   var txt=document.getElementById('announcementInput').value.trim();
-  db.ref('announcement').set(txt||null,function(){fetchAnnouncement();});
+  db.collection('config').doc('announcement').set({text:txt}).then(fetchAnnouncement);
 }
 function clearAnnouncement(){
   document.getElementById('announcementInput').value='';
-  db.ref('announcement').remove(function(){fetchAnnouncement();});
+  db.collection('config').doc('announcement').set({text:''}).then(fetchAnnouncement);
 }
 
-// ── distribution ──────────────────────────────────
 function allPlayers(){
   var seen={},pool=[];
-  V_PLAYERS.concat(B_PLAYERS).forEach(function(p){
-    if(!seen[p.name]){seen[p.name]=true;pool.push(p);}
-  });
+  V_PLAYERS.concat(B_PLAYERS).forEach(function(p){if(!seen[p.name]){seen[p.name]=true;pool.push(p);}});
   return pool;
 }
 function poolDistribute(){
@@ -510,122 +459,71 @@ function poolDistribute(){
   });
   return{assignments:assignments,playerHours:playerHours,matAssignments:matAssignments,target:target};
 }
-function recalc(){
-  RES=poolDistribute();
-  renderCards();renderMaterials();renderSummary();
-}
+function recalc(){RES=poolDistribute();renderCards();renderMaterials();renderSummary();}
 
-// ── helpers ───────────────────────────────────────
-function initials(name){
-  var p=name.trim().split(/[\s.]+/);
-  return((p[0][0]||'')+(p[1]?p[1][0]:p[0][1]||'')).toUpperCase();
-}
-function assignmentType(assigns){
-  var v=assigns.some(function(a){return a.craft==='v';}),b=assigns.some(function(a){return a.craft==='b';});
-  return(v&&b)?'both':b?'b':'v';
-}
-function playerIsLate(p){
-  if(!isAlertActive())return false;
-  var assigns=RES.assignments[p]||[];
-  return assigns.filter(function(a){return isChecked(p,a.mat);}).length===0&&assigns.length>0;
-}
-function stat(label,val){
-  return'<div class="stat"><div class="stat-label">'+label+'</div><div class="stat-val">'+val+'</div></div>';
-}
+function initials(name){var p=name.trim().split(/[\s.]+/);return((p[0][0]||'')+(p[1]?p[1][0]:p[0][1]||'')).toUpperCase();}
+function assignmentType(assigns){var v=assigns.some(function(a){return a.craft==='v';}),b=assigns.some(function(a){return a.craft==='b';});return(v&&b)?'both':b?'b':'v';}
+function playerIsLate(p){if(!isAlertActive())return false;var assigns=RES.assignments[p]||[];return assigns.filter(function(a){return isChecked(p,a.mat);}).length===0&&assigns.length>0;}
+function stat(l,v){return'<div class="stat"><div class="stat-label">'+l+'</div><div class="stat-val">'+v+'</div></div>';}
 function esc(s){return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 
-// ── render: alert banner ──────────────────────────
 function renderAlertBanner(){
   var late=allPlayers().map(function(p){return p.name;}).filter(playerIsLate);
   var banner=document.getElementById('alertBanner');
   if(!late.length||!isAlertActive()){banner.style.display='none';return;}
   banner.style.display='block';
   var d=daysUntil(getNextDeadline());
-  document.getElementById('alertTitle').textContent=
-    d<=0?'Deadline is today! No progress from:':'Deadline in '+d+' day'+(d===1?'':'s')+'! No progress yet from:';
-  document.getElementById('alertNames').innerHTML=
-    late.map(function(p){return'<span class="badge badge-alert">'+p+'</span>';}).join('');
+  document.getElementById('alertTitle').textContent=d<=0?'Deadline is today! No progress from:':'Deadline in '+d+' day'+(d===1?'':'s')+'! No progress yet from:';
+  document.getElementById('alertNames').innerHTML=late.map(function(p){return'<span class="badge badge-alert">'+p+'</span>';}).join('');
 }
 
-// ── render: by player ─────────────────────────────
 function renderCards(){
   renderAlertBanner();
   var filter=document.getElementById('roleFilter').value;
   var search=document.getElementById('searchBox').value.toLowerCase();
-  var grid=document.getElementById('cardsGrid');
-  grid.innerHTML='';
-
+  var grid=document.getElementById('cardsGrid');grid.innerHTML='';
   allPlayers().forEach(function(pd){
-    var p=pd.name;
-    var assigns=RES.assignments[p]||[];
-    var aType=assignmentType(assigns);
-    var late=playerIsLate(p);
+    var p=pd.name,assigns=RES.assignments[p]||[],aType=assignmentType(assigns),late=playerIsLate(p);
     if(filter==='alert'&&!late)return;
     if(filter!=='all'&&filter!=='alert'&&filter!==aType)return;
     if(search&&p.toLowerCase().indexOf(search)===-1)return;
-
     var hrs=RES.playerHours[p]||0;
     var avCls=aType==='v'?'av-v':aType==='b'?'av-b':'av-both';
     var badgeCls=aType==='v'?'badge-v':aType==='b'?'badge-b':'badge-both';
     var roleLabel=aType==='v'?'Viewfinders':aType==='b'?'Booby traps':'Mixed';
     var done=assigns.filter(function(a){return isChecked(p,a.mat);}).length;
     var pct=assigns.length?Math.round(done/assigns.length*100):0;
-    var rateTag=pd.gear>0
-      ?'<span class="badge badge-confirmed">gear '+pd.gear+'%</span>'
-      :'<span class="badge badge-est">gear unknown</span>';
-
+    var rateTag=pd.gear>0?'<span class="badge badge-confirmed">gear '+pd.gear+'%</span>':'<span class="badge badge-est">gear unknown</span>';
     var matRows=assigns.map(function(a){
-      var chk=isChecked(p,a.mat);
-      var er=calcRate(a.base,pd);
+      var chk=isChecked(p,a.mat),er=calcRate(a.base,pd);
       var rateStr=er?'<span style="color:#1A4B8C;">~'+er+'% drop</span>':'<span style="color:#bbb;">rate unknown</span>';
       var imgEl=a.img
-        ?'<img class="mat-img" src="'+a.img+'" alt="'+a.mat+'" width="36" height="36" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'">'
-         +'<div class="mat-img-ph" style="display:none"></div>'
+        ?'<img class="mat-img" src="'+a.img+'" alt="'+a.mat+'" width="36" height="36" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'"><div class="mat-img-ph" style="display:none"></div>'
         :'<div class="mat-img-ph"></div>';
       return'<div class="mat-task'+(chk?' done':'')+'" onclick="toggleCheck(\''+esc(p)+'\',\''+esc(a.mat)+'\')">'
-        +imgEl
-        +'<div class="mat-info">'
+        +imgEl+'<div class="mat-info">'
           +'<div class="mat-name-row"><span class="craft-dot" style="background:'+(a.craft==='v'?'#7F77DD':'#1D9E75')+'"></span>'+a.mat+'</div>'
           +'<div class="mat-sub">'+a.amount.toLocaleString()+' pcs &middot; '+a.hours.toFixed(1)+'h</div>'
           +'<div class="mat-rate">'+rateStr+'</div>'
-        +'</div>'
-        +'<div class="mat-check">'
-          +'<svg class="check-svg" width="13" height="13" viewBox="0 0 12 12" fill="none">'
-            +'<polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'
-          +'</svg>'
-        +'</div>'
-      +'</div>';
+        +'</div><div class="mat-check"><svg class="check-svg" width="13" height="13" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>';
     }).join('');
-
-    var card=document.createElement('div');
-    card.className='card'+(late?' alert-card':'');
-    card.innerHTML='<div class="card-header">'
-      +'<div class="avatar '+avCls+'">'+initials(p)+'</div>'
-      +'<div style="flex:1;min-width:0;">'
-        +'<div class="card-name">'+p+'</div>'
-        +'<div class="card-meta">'
-          +'<span class="badge '+badgeCls+'">'+roleLabel+'</span>'
-          +'lvl '+pd.level+' &middot; GP'+gpGrade(pd.level)
-          +(pd.hi?' &middot; HI':'')+(pd.adv?' &middot; ADV':'')
-          +rateTag
+    var card=document.createElement('div');card.className='card'+(late?' alert-card':'');
+    card.innerHTML='<div class="card-header"><div class="avatar '+avCls+'">'+initials(p)+'</div>'
+      +'<div style="flex:1;min-width:0;"><div class="card-name">'+p+'</div>'
+        +'<div class="card-meta"><span class="badge '+badgeCls+'">'+roleLabel+'</span>'
+          +'lvl '+pd.level+' &middot; GP'+gpGrade(pd.level)+(pd.hi?' &middot; HI':'')+(pd.adv?' &middot; ADV':'')+rateTag
           +(late?'<span class="badge badge-alert">No progress</span>':'')
-        +'</div>'
-      +'</div>'
+        +'</div></div>'
       +'<div style="font-size:12px;font-weight:500;color:#26215C;white-space:nowrap;">'+done+'/'+assigns.length+'</div>'
-    +'</div>'
-    +'<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct+'%"></div></div>'
+    +'</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct+'%"></div></div>'
     +'<div class="mat-list">'+matRows+'</div>';
     grid.appendChild(card);
   });
-
-  if(!grid.children.length)
-    grid.innerHTML='<p style="color:#888;font-size:13px;padding:8px 0;">No players match.</p>';
+  if(!grid.children.length)grid.innerHTML='<p style="color:#888;font-size:13px;padding:8px 0;">No players match.</p>';
 }
 
-// ── render: by material ───────────────────────────
 function renderMaterials(){
-  var body=document.getElementById('matBody');
-  body.innerHTML='';
+  var body=document.getElementById('matBody');body.innerHTML='';
   RES.matAssignments.forEach(function(m){
     var pl=m.assigns.map(function(a){return a.player;}).join(', ');
     var each=m.assigns.length?Math.round(m.total/m.assigns.length):m.total;
@@ -634,16 +532,13 @@ function renderMaterials(){
     var tr=document.createElement('tr');
     tr.innerHTML='<td style="font-weight:500">'+imgCell+m.mat+'</td>'
       +'<td><span class="badge '+bc+'">'+(m.craft==='v'?'Viewfinders':'Booby traps')+'</span></td>'
-      +'<td>'+m.total.toLocaleString()+'</td>'
-      +'<td>'+m.base+'%</td>'
+      +'<td>'+m.total.toLocaleString()+'</td><td>'+m.base+'%</td>'
       +'<td style="color:#666;font-size:12px">'+pl+'</td>'
-      +'<td>~'+each.toLocaleString()+'</td>'
-      +'<td>'+(each/m.rph).toFixed(1)+'h</td>';
+      +'<td>~'+each.toLocaleString()+'</td><td>'+(each/m.rph).toFixed(1)+'h</td>';
     body.appendChild(tr);
   });
 }
 
-// ── render: summary ───────────────────────────────
 function renderSummary(){
   var players=allPlayers();
   var totalHrs=players.reduce(function(s,pd){return s+(RES.playerHours[pd.name]||0);},0);
@@ -652,41 +547,24 @@ function renderSummary(){
   var doneTasks=players.reduce(function(s,pd){
     return s+(RES.assignments[pd.name]||[]).filter(function(a){return isChecked(pd.name,a.mat);}).length;
   },0);
-  document.getElementById('statRow').innerHTML=
-    stat('Players',players.length)+stat('Total hours',Math.round(totalHrs))
-    +stat('Target/player',target.toFixed(1)+'h')+stat('Overall',doneTasks+'/'+totalTasks);
-
-  var body=document.getElementById('summaryBody');
-  body.innerHTML='';
+  document.getElementById('statRow').innerHTML=stat('Players',players.length)+stat('Total hours',Math.round(totalHrs))+stat('Target/player',target.toFixed(1)+'h')+stat('Overall',doneTasks+'/'+totalTasks);
+  var body=document.getElementById('summaryBody');body.innerHTML='';
   var rows=players.map(function(pd){
-    var p=pd.name;
-    var assigns=RES.assignments[p]||[];
-    var aType=assignmentType(assigns);
+    var p=pd.name,assigns=RES.assignments[p]||[],aType=assignmentType(assigns);
     var done=assigns.filter(function(a){return isChecked(p,a.mat);}).length;
     var pct=assigns.length?Math.round(done/assigns.length*100):0;
     var rates=assigns.map(function(a){return calcRate(a.base,pd);}).filter(Boolean);
     var avgRate=rates.length?Math.round(rates.reduce(function(s,r){return s+r;},0)/rates.length):null;
-    var mats=assigns.map(function(a){
-      var chk=isChecked(p,a.mat);
-      return'<span class="badge '+(a.craft==='v'?'badge-v':'badge-b')+'" style="margin:1px 2px;font-size:10px;'+(chk?'opacity:.4;text-decoration:line-through;':'')+'">'+a.mat+'</span>';
-    }).join(' ');
+    var mats=assigns.map(function(a){var chk=isChecked(p,a.mat);return'<span class="badge '+(a.craft==='v'?'badge-v':'badge-b')+'" style="margin:1px 2px;font-size:10px;'+(chk?'opacity:.4;text-decoration:line-through;':'')+'">'+a.mat+'</span>';}).join(' ');
     return{pd:pd,p:p,aType:aType,hrs:RES.playerHours[p]||0,mats:mats,done:done,total:assigns.length,pct:pct,avgRate:avgRate};
   }).sort(function(a,b){return b.hrs-a.hrs;});
-
   rows.forEach(function(r){
     var bc=r.aType==='v'?'badge-v':r.aType==='b'?'badge-b':'badge-both';
     var label=r.aType==='v'?'Viewfinders':r.aType==='b'?'Booby traps':'Mixed';
-    var diff=r.hrs-target;
-    var diffColor=Math.abs(diff)<1?'#3B6D11':Math.abs(diff)<3?'#7a5c00':'#c0392b';
-    var prog='<div style="display:flex;align-items:center;gap:7px;">'
-      +'<div style="flex:1;min-width:55px;height:5px;background:#ededea;border-radius:4px;overflow:hidden;">'
-        +'<div style="width:'+r.pct+'%;height:5px;background:#1D9E75;border-radius:4px;"></div>'
-      +'</div>'
-      +'<span style="font-size:12px;color:#666;white-space:nowrap;">'+r.done+'/'+r.total+'</span>'
-    +'</div>';
+    var diff=r.hrs-target,diffColor=Math.abs(diff)<1?'#3B6D11':Math.abs(diff)<3?'#7a5c00':'#c0392b';
+    var prog='<div style="display:flex;align-items:center;gap:7px;"><div style="flex:1;min-width:55px;height:5px;background:#ededea;border-radius:4px;overflow:hidden;"><div style="width:'+r.pct+'%;height:5px;background:#1D9E75;border-radius:4px;"></div></div><span style="font-size:12px;color:#666;white-space:nowrap;">'+r.done+'/'+r.total+'</span></div>';
     var tr=document.createElement('tr');
-    tr.innerHTML='<td style="font-weight:500">'+r.p+'</td>'
-      +'<td><span class="badge '+bc+'">'+label+'</span></td>'
+    tr.innerHTML='<td style="font-weight:500">'+r.p+'</td><td><span class="badge '+bc+'">'+label+'</span></td>'
       +'<td style="color:#666;">'+r.pd.level+' <span style="font-size:11px;color:#aaa;">GP'+gpGrade(r.pd.level)+'</span></td>'
       +'<td>'+(r.avgRate?'<span style="color:#1A4B8C;font-size:12px;">~'+r.avgRate+'%</span>':'<span style="color:#aaa;font-size:12px;">unknown</span>')+'</td>'
       +'<td style="font-size:12px;line-height:2">'+r.mats+'</td>'
@@ -696,62 +574,41 @@ function renderSummary(){
   });
 }
 
-// ── history ───────────────────────────────────────
 function loadHistoryPeriods(){
-  db.ref('checks').once('value',function(snap){
-    var data=snap.val()||{};
-    var keys=Object.keys(data).sort().reverse();
+  db.collection('checks').get().then(function(snap){
+    var keys=[];snap.forEach(function(doc){keys.push(doc.id);});keys.sort().reverse();
     var sel=document.getElementById('historyPeriod');
     if(!keys.length){sel.innerHTML='<option>No history yet</option>';return;}
-    sel.innerHTML=keys.map(function(k){
-      return'<option value="'+k+'">'+periodLabel(k)+(k===periodKey?' — current':'')+'</option>';
-    }).join('');
+    sel.innerHTML=keys.map(function(k){return'<option value="'+k+'">'+periodLabel(k)+(k===periodKey?' - current':'')+'</option>';}).join('');
     renderHistory();
   });
 }
 function renderHistory(){
-  var key=document.getElementById('historyPeriod').value;
-  if(!key)return;
-  db.ref('checks/'+key).once('value',function(snap){
-    var data=snap.val()||{};
+  var key=document.getElementById('historyPeriod').value;if(!key)return;
+  db.collection('checks').doc(key).get().then(function(doc){
+    var data=doc.exists?doc.data():{};
     var container=document.getElementById('historyContent');
-    if(!Object.keys(data).length){
-      container.innerHTML='<div class="history-empty">No checkmarks recorded for this period.</div>';return;
-    }
+    if(!Object.keys(data).length){container.innerHTML='<div class="history-empty">No checkmarks recorded for this period.</div>';return;}
     var rows=allPlayers().map(function(pd){
-      var p=pd.name;
-      var assigns=RES.assignments[p]||[];
-      var done=assigns.filter(function(a){return!!data[safeKey(p)+'|'+safeKey(a.mat)];}).length;
+      var p=pd.name,assigns=RES.assignments[p]||[];
+      var done=assigns.filter(function(a){return!!data[safeKey(p)+'__'+safeKey(a.mat)];}).length;
       var pct=assigns.length?Math.round(done/assigns.length*100):0;
-      return{p:p,done:done,total:assigns.length,pct:pct,
-        color:pct===100?'#1D9E75':pct>=50?'#BA7517':'#E24B4A'};
+      return{p:p,done:done,total:assigns.length,pct:pct,color:pct===100?'#1D9E75':pct>=50?'#BA7517':'#E24B4A'};
     }).sort(function(a,b){return b.pct-a.pct;});
-    var html='<div class="table-wrap"><table>'
-      +'<thead><tr><th>Player</th><th>Completed</th><th>Progress</th></tr></thead><tbody>';
-    rows.forEach(function(r){
-      html+='<tr><td style="font-weight:500">'+r.p+'</td><td>'+r.done+'/'+r.total+'</td>'
-        +'<td style="min-width:130px;"><div style="display:flex;align-items:center;gap:8px;">'
-          +'<div style="flex:1;height:6px;background:#ededea;border-radius:4px;overflow:hidden;">'
-            +'<div style="width:'+r.pct+'%;height:6px;background:'+r.color+';border-radius:4px;"></div>'
-          +'</div><span style="font-size:12px;color:#666;">'+r.pct+'%</span>'
-        +'</div></td></tr>';
-    });
+    var html='<div class="table-wrap"><table><thead><tr><th>Player</th><th>Completed</th><th>Progress</th></tr></thead><tbody>';
+    rows.forEach(function(r){html+='<tr><td style="font-weight:500">'+r.p+'</td><td>'+r.done+'/'+r.total+'</td><td style="min-width:130px;"><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:6px;background:#ededea;border-radius:4px;overflow:hidden;"><div style="width:'+r.pct+'%;height:6px;background:'+r.color+';border-radius:4px;"></div></div><span style="font-size:12px;color:#666;">'+r.pct+'%</span></div></td></tr>';});
     container.innerHTML=html+'</tbody></table></div>';
   });
 }
 
-// ── edit form ─────────────────────────────────────
 function makePlayerRow(group,player){
-  var d=document.createElement('div');
-  d.className='player-edit-row';
-  d.dataset.group=group;
-  d.innerHTML=
-    '<input type="text" placeholder="Name" value="'+(player&&player.name||'')+'" style="min-width:90px;">'
-    +'<input type="number" placeholder="Lvl" value="'+(player&&player.level||'')+'" min="1" max="300" title="Level">'
-    +'<input type="number" placeholder="Gear%" value="'+(player&&player.gear||'')+'" min="0" max="2000" title="Gear %">'
-    +'<label title="Higher Income"><input type="checkbox" '+(player&&player.hi?'checked':'')+' style="margin-right:3px;">HI</label>'
-    +'<label title="Adventurer"><input type="checkbox" '+(player&&player.adv?'checked':'')+' style="margin-right:3px;">ADV</label>'
-    +'<button class="btn btn-sm" onclick="this.closest(\'.player-edit-row\').remove()" style="color:#A32D2D;border-color:#f5c6c6;padding:4px 8px;">✕</button>';
+  var d=document.createElement('div');d.className='player-edit-row';d.dataset.group=group;
+  d.innerHTML='<input type="text" placeholder="Name" value="'+(player&&player.name||'')+'" style="min-width:90px;">'
+    +'<input type="number" placeholder="Lvl" value="'+(player&&player.level||'')+'" min="1" max="300">'
+    +'<input type="number" placeholder="Gear%" value="'+(player&&player.gear||'')+'" min="0" max="2000">'
+    +'<label><input type="checkbox" '+(player&&player.hi?'checked':'')+' style="margin-right:3px;">HI</label>'
+    +'<label><input type="checkbox" '+(player&&player.adv?'checked':'')+' style="margin-right:3px;">ADV</label>'
+    +'<button class="btn btn-sm" onclick="this.closest(\'.player-edit-row\').remove()" style="color:#A32D2D;border-color:#f5c6c6;padding:4px 8px;">&#x2715;</button>';
   return d;
 }
 function populateEditForm(){
@@ -760,37 +617,26 @@ function populateEditForm(){
   V_PLAYERS.forEach(function(p){vC.appendChild(makePlayerRow('v',p));});
   B_PLAYERS.forEach(function(p){bC.appendChild(makePlayerRow('b',p));});
 }
-function addPlayerRow(group){
-  document.getElementById(group+'PlayerRows').appendChild(makePlayerRow(group,null));
-}
+function addPlayerRow(group){document.getElementById(group+'PlayerRows').appendChild(makePlayerRow(group,null));}
 function readRows(group){
   var rows=document.querySelectorAll('.player-edit-row[data-group="'+group+'"]'),players=[];
   rows.forEach(function(row){
-    var inputs=row.querySelectorAll('input');
-    var name=inputs[0].value.trim();
-    if(!name)return;
-    players.push({name:name,level:parseInt(inputs[1].value)||100,gear:parseInt(inputs[2].value)||0,
-      hi:inputs[3].checked,adv:inputs[4].checked});
+    var inputs=row.querySelectorAll('input');var name=inputs[0].value.trim();if(!name)return;
+    players.push({name:name,level:parseInt(inputs[1].value)||100,gear:parseInt(inputs[2].value)||0,hi:inputs[3].checked,adv:inputs[4].checked});
   });
   return players;
 }
 function saveRoster(){
   var newV=readRows('v'),newB=readRows('b');
   if(!newV.length&&!newB.length){alert('No players entered.');return;}
-  db.ref('roster').set({v:newV,b:newB},function(err){
-    if(err){alert('Save failed: '+err.message);return;}
-    V_PLAYERS=newV;B_PLAYERS=newB;
-    recalc();
-    alert('Saved! Schedule recalculated.');
-  });
+  db.collection('config').doc('roster').set({v:newV,b:newB}).then(function(){
+    V_PLAYERS=newV;B_PLAYERS=newB;recalc();alert('Saved!');
+  }).catch(function(e){alert('Save failed: '+e.message);});
 }
-
-// ── tab / auth ────────────────────────────────────
 function switchTab(id,btn){
   document.querySelectorAll('.section').forEach(function(s){s.classList.remove('show');});
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-  document.getElementById(id).classList.add('show');
-  btn.classList.add('active');
+  document.getElementById(id).classList.add('show');btn.classList.add('active');
   if(id==='history')loadHistoryPeriods();
 }
 function checkPw(){
@@ -810,18 +656,14 @@ function lockEdit(){
   document.getElementById('pwInput').value='';
 }
 
-// ── boot ──────────────────────────────────────────
 updateDeadlineDisplay();
 fetchAnnouncement();
 fetchRoster(function(){
-  recalc();
-  populateEditForm();
+  recalc();populateEditForm();
   fetchChecks(function(){
-    renderCards();
-    renderSummary();
+    renderCards();renderSummary();
     var now=new Date();
-    document.getElementById('lastUpdated').textContent=
-      'Updated '+now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('lastUpdated').textContent='Updated '+now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
   });
 });
 </script>
