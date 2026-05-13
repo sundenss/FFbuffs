@@ -235,7 +235,14 @@ textarea{width:100%;font-family:inherit;font-size:13px;padding:10px;border-radiu
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-firebase.initializeApp({projectId:"the-west-schedule-default-rtdb"});
+firebase.initializeApp({
+  apiKey: "AIzaSyCd3BSSuVsinD139GyxCkz73CsAZWU0DwY",
+  authDomain: "the-west-schedule.firebaseapp.com",
+  projectId: "the-west-schedule",
+  storageBucket: "the-west-schedule.firebasestorage.app",
+  messagingSenderId: "777905200661",
+  appId: "1:777905200661:web:db7bbbaec7ba1749a9f81c"
+});
 var db = firebase.firestore();
 
 var V_MATS=[
@@ -255,7 +262,7 @@ var B_MATS=[
   {name:"Granite",              total:100,  rph:25, base:270, img:"img/granite.png"},
   {name:"Dynamite",             total:1000, rph:14, base:150, img:"img/dynamite.png"},
   {name:"Jugs",                 total:200,  rph:8,  base:96,  img:"img/jugs.png"},
-  {name:"Saws",                 total:200,  rph:5,  base:61,  img:"img/saw.png"},
+  {name:"Saws",                 total:200,  rph:5,  base:61,  img:"img/saws.png"},
   {name:"Newspaper",            total:500,  rph:36, base:391, img:"img/newspaper.png"},
   {name:"Sledge hammer",        total:100,  rph:7,  base:85,  img:"img/sledge-hammer.png"},
   {name:"Glass of water",       total:100,  rph:36, base:391, img:"img/glass-of-water.png"},
